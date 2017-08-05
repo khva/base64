@@ -17,9 +17,9 @@ namespace base64
         template <size_t index>
         struct index_of
         {
-            static constexpr size_t get(const char * const encoding_set, const char symbol)
+            static constexpr size_t get(const char * const alphabet, const char symbol)
             {
-                return encoding_set[index] == symbol ? index : index_of<index - 1>::get(encoding_set, symbol);
+                return alphabet[index] == symbol ? index : index_of<index - 1>::get(alphabet, symbol);
             }
         };
 
@@ -27,9 +27,9 @@ namespace base64
         template <>
         struct index_of<0>
         {
-            static constexpr size_t get(const char * const encoding_set, const char symbol)
+            static constexpr size_t get(const char * const alphabet, const char symbol)
             {
-                return encoding_set[0] == symbol ? 0 : invalid_index;
+                return alphabet[0] == symbol ? 0 : invalid_index;
             }
         };
 
@@ -43,20 +43,21 @@ namespace base64
 
     struct def_encoding_traits
     {
-        static constexpr char placeholder() { return '='; }
+        static constexpr bool has_pad()  {  return true;  }
+        static constexpr char pad()      {  return '=';   }
 
-        static constexpr const char * encoding_set()
+        static constexpr const char * alphabet()
         {
             return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
         }
 
-        static constexpr size_t encoding_size() { return 64; }
+        static constexpr size_t alphabet_size() { return 64; }
 
         static constexpr size_t invalid_index = detail::invalid_index;
 
         static constexpr size_t index_of(const char symbol)
         {
-            return detail::index_of<encoding_size() - 1>::get(encoding_set(), symbol);
+            return detail::index_of<alphabet_size() - 1>::get(alphabet(), symbol);
         }
     };
 
