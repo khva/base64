@@ -25,6 +25,7 @@ namespace base64
         const const_buffer      & base64_data,
         const mutable_buffer    & raw_data);
 
+
     template <typename base64_array, typename raw_array, typename encoding_traits = def_encoding_traits>
     size_t decode(
         const base64_array      & base64_data,
@@ -116,5 +117,6 @@ namespace base64
         return decode(make_buffer(base64_data), make_buffer(raw_data));
     }
 
-} // namespace base64
+
+}	// namespace base64
 

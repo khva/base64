@@ -31,13 +31,6 @@ namespace base64
     const_buffer make_buffer(const pod_type (& data)[array_size], size_t byte_count);
 
 
-    template <typename pod_type, size_t array_size>
-    mutable_buffer make_buffer(pod_type (& data)[array_size]);
-
-    template <typename pod_type, size_t array_size>
-    const_buffer make_buffer(const pod_type (& data)[array_size]);
-
-
     template <typename pod_type, typename allocator_type>
     mutable_buffer make_buffer(std::vector<pod_type, allocator_type> & data);
 
@@ -187,4 +180,4 @@ namespace base64
     }
 
 
-}   // namespace base64
+}	// namespace base64
