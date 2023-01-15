@@ -127,4 +127,4 @@ namespace base64
         return const_buffer(array_bytes > 0 ? reinterpret_cast<const uint8_t *>(data.data()) : nullptr, array_bytes);
     }
 
-}	// namespace base64
+}   // namespace base64

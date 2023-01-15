@@ -151,4 +151,4 @@ namespace base64
     }
 
 
-} // namespace base64
+}   // namespace base64
