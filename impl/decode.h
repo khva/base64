@@ -20,6 +20,11 @@ namespace base64
         const const_buffer      & base64_data);
 
 
+    template <typename base64_array, typename encoding_traits = def_encoding_traits>
+    size_t calc_decoded_size(
+        const base64_array      & base64_data);
+
+
     template <typename encoding_traits = def_encoding_traits>
     size_t decode(
         const const_buffer      & base64_data,
@@ -48,13 +53,14 @@ namespace base64
 
         if (encoded_size > 0)
         {
-            const uint8_t * base64_ptr = static_cast<const uint8_t *>(base64_data.data());
+            const uint8_t * base64_ptr = base64_data.data();
+            constexpr const uint8_t pad = static_cast<uint8_t>(encoding_traits::pad());
 
-            if (base64_ptr[encoded_size - 1] == encoding_traits::pad())
+            if (base64_ptr[encoded_size - 1] == pad)
             {
                 --raw_size;
 
-                if (base64_ptr[encoded_size - 2] == encoding_traits::pad())
+                if (encoded_size > 1 && base64_ptr[encoded_size - 2] == pad)
                     --raw_size;
             }
         }
@@ -62,6 +68,14 @@ namespace base64
         return raw_size;
     }
 
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    template <typename base64_array, typename encoding_traits>
+    size_t calc_decoded_size(
+        const base64_array      & base64_data)
+    {
+        return calc_decoded_size<encoding_traits>(make_const_buffer(base64_data));
+    }
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -78,16 +92,16 @@ namespace base64
         }
 
         const size_t encoded_size = base64_data.size();
-        constexpr const char pad = encoding_traits::pad();
+        constexpr const uint8_t pad = static_cast<uint8_t>(encoding_traits::pad());
 
-        auto index_of = [](char symbol) -> uint32_t
+        auto index_of = [](uint8_t symbol) -> uint32_t
         {
-            const size_t index = encoding_traits::index_of(symbol);
+            const size_t index = encoding_traits::index_of(static_cast<char>(symbol));
             return index == encoding_traits::invalid_index ? 0 : static_cast<uint32_t>(index);
         };
 
-        const uint8_t * base64_ptr = static_cast<const uint8_t *>(base64_data.data());
-        uint8_t * raw_ptr = static_cast<uint8_t *>(raw_data.data());
+        const uint8_t * base64_ptr = base64_data.data();
+        uint8_t * raw_ptr = raw_data.data();
 
         for (size_t i = 0, j = 0; i < encoded_size;)
         {
@@ -114,7 +128,7 @@ namespace base64
         const base64_array      & base64_data,
         raw_array               & raw_data)
     {
-        return decode(make_buffer(base64_data), make_buffer(raw_data));
+        return decode<encoding_traits>(make_const_buffer(base64_data), make_mutable_buffer(raw_data));
     }
 
 

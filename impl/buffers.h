@@ -18,18 +18,18 @@ namespace base64
         mutable_buffer() = default;
         ~mutable_buffer() = default;
 
-        mutable_buffer(void * data, size_t byte_count);
+        mutable_buffer(uint8_t * data, size_t byte_count);
 
         mutable_buffer(const mutable_buffer & other) = default;
         mutable_buffer & operator=(const mutable_buffer & other) = default;
 
         void swap(mutable_buffer & other);
 
-        void * data() const;
+        uint8_t * data() const;
         size_t size() const;
 
     private:
-        void      * m_data = nullptr;
+        uint8_t   * m_data = nullptr;
         size_t      m_size = 0;
     };
 
@@ -44,7 +44,7 @@ namespace base64
         const_buffer() = default;
         ~const_buffer() = default;
 
-        const_buffer(const void * data, size_t byte_count);
+        const_buffer(const uint8_t * data, size_t byte_count);
 
         const_buffer(const const_buffer & other) = default;
         const_buffer & operator=(const const_buffer & other) = default;
@@ -54,12 +54,12 @@ namespace base64
 
         void swap(const_buffer & other);
 
-        const void * data() const;
+        const uint8_t * data() const;
         size_t size() const;
 
     private:
-        const void    * m_data = nullptr;
-        size_t          m_size = 0;
+        const uint8_t   * m_data = nullptr;
+        size_t            m_size = 0;
     };
 
 
@@ -69,7 +69,7 @@ namespace base64
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    inline mutable_buffer::mutable_buffer(void * data, size_t byte_count)
+    inline mutable_buffer::mutable_buffer(uint8_t * data, size_t byte_count)
         : m_data(data)
         , m_size(byte_count)
     {
@@ -86,7 +86,7 @@ namespace base64
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    inline void * mutable_buffer::data() const
+    inline uint8_t * mutable_buffer::data() const
     {
         return m_data;
     }
@@ -105,7 +105,7 @@ namespace base64
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    inline const_buffer::const_buffer(const void * data, size_t byte_count)
+    inline const_buffer::const_buffer(const uint8_t * data, size_t byte_count)
         : m_data(data)
         , m_size(byte_count)
     {
@@ -138,7 +138,7 @@ namespace base64
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    inline const void * const_buffer::data() const
+    inline const uint8_t * const_buffer::data() const
     {
         return m_data;
     }

@@ -1,4 +1,4 @@
-﻿cmake_minimum_required (VERSION 3.12)
+﻿cmake_minimum_required (VERSION 3.15)
 
 project ("base64_test")
 
@@ -7,7 +7,7 @@ include_directories(doctest)
 enable_testing()
 
 set(TEST_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/test.cpp)
+    "def_encoding_test.cpp")
 
 add_executable(${PROJECT_NAME} ${TEST_SOURCES})
 add_test(NAME base64_test COMMAND ./base64_test)
@@ -17,7 +17,7 @@ add_test(NAME base64_test COMMAND ./base64_test)
 set(SJTEST_GCC_FLAGS -Wall -Wextra -Wpedantic)
 set(SJTEST_CLANG_FLAGS -Weverything -Wno-global-constructors -Wno-weak-vtables)
 target_compile_options(
-  ${PROJECT_NAME} PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/W3> $<$<CXX_COMPILER_ID:GNU>:${SJTEST_GCC_FLAGS}>
+  ${PROJECT_NAME} PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX> $<$<CXX_COMPILER_ID:GNU>:${SJTEST_GCC_FLAGS}>
                        $<$<CXX_COMPILER_ID:Clang>:${SJTEST_CLANG_FLAGS}>)
 
 message(STATUS "CMAKE_CURRENT_BINARY_DIR=" ${CMAKE_CURRENT_BINARY_DIR})

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <limits>
+#include <string_view>
 
 
 namespace base64
@@ -17,7 +18,7 @@ namespace base64
         template <size_t index>
         struct index_of
         {
-            static constexpr size_t get(const char * const alphabet, const char symbol)
+            static constexpr size_t get(const std::string_view alphabet, const char symbol)
             {
                 return alphabet[index] == symbol ? index : index_of<index - 1>::get(alphabet, symbol);
             }
@@ -27,7 +28,7 @@ namespace base64
         template <>
         struct index_of<0>
         {
-            static constexpr size_t get(const char * const alphabet, const char symbol)
+            static constexpr size_t get(const std::string_view alphabet, const char symbol)
             {
                 return alphabet[0] == symbol ? 0 : invalid_index;
             }
@@ -46,12 +47,12 @@ namespace base64
         static constexpr bool has_pad()  {  return true;  }
         static constexpr char pad()      {  return '=';   }
 
-        static constexpr const char * alphabet()
+        static constexpr std::string_view alphabet()
         {
             return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
         }
 
-        static constexpr size_t alphabet_size() { return 64; }
+        static constexpr size_t alphabet_size() { return alphabet().size(); }
 
         static constexpr size_t invalid_index = detail::invalid_index;
 
