@@ -9,11 +9,11 @@ namespace base64
 {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    // custom_encoding_traits struct (definition)
+    // encoding_traits_t struct (definition)
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     template <const char * alphabet_type, char pad_type>
-    struct custom_encoding_traits
+    struct encoding_traits_t
     {
         static consteval std::string_view alphabet()    {   return std::string_view{ alphabet_type };           }
         static constexpr uint8_t char_at(size_t index)  {   return static_cast<uint8_t>(alphabet_type[index]);  }
@@ -43,12 +43,10 @@ namespace base64
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    // def_encoding_traits struct (definition)
+    // def_encoding_t struct (definition)
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
-//    constexpr const char def_alphabet[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-//    using def_encoding_traits = custom_encoding_traits<def_alphabet, '='>;
-    struct def_encoding_traits
+    struct def_encoding_t
     {
         static consteval std::string_view alphabet()
         {

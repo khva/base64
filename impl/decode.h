@@ -15,23 +15,23 @@ namespace base64
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-    template <typename encoding_traits = def_encoding_traits>
+    template <typename encoding_traits = def_encoding_t>
     size_t calc_decoded_size(
-        const const_buffer      & base64_data);
+        const const_buffer_t      & base64_data);
 
 
-    template <typename base64_array, typename encoding_traits = def_encoding_traits>
+    template <typename base64_array, typename encoding_traits = def_encoding_t>
     size_t calc_decoded_size(
         const base64_array      & base64_data);
 
 
-    template <typename encoding_traits = def_encoding_traits>
+    template <typename encoding_traits = def_encoding_t>
     size_t decode(
-        const const_buffer      & base64_data,
-        const mutable_buffer    & raw_data);
+        const const_buffer_t      & base64_data,
+        const mutable_buffer_t    & raw_data);
 
 
-    template <typename base64_array, typename raw_array, typename encoding_traits = def_encoding_traits>
+    template <typename base64_array, typename raw_array, typename encoding_traits = def_encoding_t>
     size_t decode(
         const base64_array      & base64_data,
         raw_array               & raw_data);
@@ -45,7 +45,7 @@ namespace base64
     ////////////////////////////////////////////////////////////////////////////////////////////////
     template <typename encoding_traits>
     size_t calc_decoded_size(
-        const const_buffer      & base64_data)
+        const const_buffer_t      & base64_data)
 
     {
         const size_t encoded_size = base64_data.size();
@@ -88,8 +88,8 @@ namespace base64
     ////////////////////////////////////////////////////////////////////////////////////////////////
     template <typename encoding_traits>
     size_t decode(
-        const const_buffer      & base64_data,
-        const mutable_buffer    & raw_data)
+        const const_buffer_t      & base64_data,
+        const mutable_buffer_t    & raw_data)
     {
         const size_t raw_size = calc_decoded_size<encoding_traits>(base64_data);
 

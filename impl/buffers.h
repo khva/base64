@@ -9,21 +9,21 @@ namespace base64
 {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    // mutable_buffer class (declaration)
+    // mutable_buffer_t class (declaration)
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
-    class mutable_buffer
+    class mutable_buffer_t
     {
     public:
-        mutable_buffer() = default;
-        ~mutable_buffer() = default;
+        mutable_buffer_t() = default;
+        ~mutable_buffer_t() = default;
 
-        mutable_buffer(uint8_t * data, size_t byte_count);
+        mutable_buffer_t(uint8_t * data, size_t byte_count);
 
-        mutable_buffer(const mutable_buffer & other) = default;
-        mutable_buffer & operator=(const mutable_buffer & other) = default;
+        mutable_buffer_t(const mutable_buffer_t & other) = default;
+        mutable_buffer_t & operator=(const mutable_buffer_t & other) = default;
 
-        void swap(mutable_buffer & other);
+        void swap(mutable_buffer_t & other);
 
         uint8_t * data() const;
         size_t size() const;
@@ -35,24 +35,24 @@ namespace base64
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    // const_buffer class (declaration)
+    // const_buffer_t class (declaration)
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
-    class const_buffer
+    class const_buffer_t
     {
     public:
-        const_buffer() = default;
-        ~const_buffer() = default;
+        const_buffer_t() = default;
+        ~const_buffer_t() = default;
 
-        const_buffer(const uint8_t * data, size_t byte_count);
+        const_buffer_t(const uint8_t * data, size_t byte_count);
 
-        const_buffer(const const_buffer & other) = default;
-        const_buffer & operator=(const const_buffer & other) = default;
+        const_buffer_t(const const_buffer_t & other) = default;
+        const_buffer_t & operator=(const const_buffer_t & other) = default;
 
-        const_buffer(const mutable_buffer & other);
-        const_buffer & operator=(const mutable_buffer & other);
+        const_buffer_t(const mutable_buffer_t & other);
+        const_buffer_t & operator=(const mutable_buffer_t & other);
 
-        void swap(const_buffer & other);
+        void swap(const_buffer_t & other);
 
         const uint8_t * data() const;
         size_t size() const;
@@ -65,11 +65,11 @@ namespace base64
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    // mutable_buffer class (definition)
+    // mutable_buffer_t class (definition)
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    inline mutable_buffer::mutable_buffer(uint8_t * data, size_t byte_count)
+    inline mutable_buffer_t::mutable_buffer_t(uint8_t * data, size_t byte_count)
         : m_data(data)
         , m_size(byte_count)
     {
@@ -78,7 +78,7 @@ namespace base64
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    inline void mutable_buffer::swap(mutable_buffer & other)
+    inline void mutable_buffer_t::swap(mutable_buffer_t & other)
     {
         std::swap(m_data, other.m_data);
         std::swap(m_size, other.m_size);
@@ -86,14 +86,14 @@ namespace base64
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    inline uint8_t * mutable_buffer::data() const
+    inline uint8_t * mutable_buffer_t::data() const
     {
         return m_data;
     }
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    inline size_t mutable_buffer::size() const
+    inline size_t mutable_buffer_t::size() const
     {
         return m_size;
     }
@@ -101,11 +101,11 @@ namespace base64
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    // const_buffer class definition
+    // const_buffer_t class definition
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    inline const_buffer::const_buffer(const uint8_t * data, size_t byte_count)
+    inline const_buffer_t::const_buffer_t(const uint8_t * data, size_t byte_count)
         : m_data(data)
         , m_size(byte_count)
     {
@@ -114,7 +114,7 @@ namespace base64
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    inline const_buffer::const_buffer(const mutable_buffer & other)
+    inline const_buffer_t::const_buffer_t(const mutable_buffer_t & other)
         : m_data(other.data())
         , m_size(other.size())
     {
@@ -122,15 +122,15 @@ namespace base64
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    inline const_buffer & const_buffer::operator=(const mutable_buffer & other)
+    inline const_buffer_t & const_buffer_t::operator=(const mutable_buffer_t & other)
     {
-        const_buffer(other).swap(*this);
+        const_buffer_t(other).swap(*this);
         return *this;
     }
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    inline void const_buffer::swap(const_buffer & other)
+    inline void const_buffer_t::swap(const_buffer_t & other)
     {
         std::swap(m_data, other.m_data);
         std::swap(m_size, other.m_size);
@@ -138,14 +138,14 @@ namespace base64
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    inline const uint8_t * const_buffer::data() const
+    inline const uint8_t * const_buffer_t::data() const
     {
         return m_data;
     }
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    inline size_t const_buffer::size() const
+    inline size_t const_buffer_t::size() const
     {
         return m_size;
     }

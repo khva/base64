@@ -15,15 +15,15 @@ namespace base64
     // encode functions (declaration)
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
-    template <typename encoding_traits = def_encoding_traits>
+    template <typename encoding_traits = def_encoding_t>
     size_t calc_encoded_size(size_t raw_size);
 
-    template <typename encoding_traits = def_encoding_traits>
+    template <typename encoding_traits = def_encoding_t>
     size_t encode(
-        const const_buffer      & raw_data,
-        const mutable_buffer    & base64_data);
+        const const_buffer_t      & raw_data,
+        const mutable_buffer_t    & base64_data);
 
-    template <typename raw_array, typename base64_array, typename encoding_traits = def_encoding_traits>
+    template <typename raw_array, typename base64_array, typename encoding_traits = def_encoding_t>
     size_t encode(
         const raw_array         & raw_data,
         base64_array            & base64_data);
@@ -52,8 +52,8 @@ namespace base64
     ////////////////////////////////////////////////////////////////////////////////////////////////
     template <typename encoding_traits>
     size_t encode(
-        const const_buffer      & raw_data,
-        const mutable_buffer    & base64_data)
+        const const_buffer_t      & raw_data,
+        const mutable_buffer_t    & base64_data)
     {
         const size_t raw_size = raw_data.size();
         const size_t encoded_size = calc_encoded_size<encoding_traits>(raw_size);
