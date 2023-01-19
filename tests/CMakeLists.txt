@@ -1,4 +1,4 @@
-﻿cmake_minimum_required (VERSION 3.15)
+﻿cmake_minimum_required (VERSION 3.15 FATAL_ERROR)
 
 project ("base64_test")
 
@@ -7,10 +7,11 @@ include_directories(doctest)
 enable_testing()
 
 set(TEST_SOURCES
-    "def_encoding_test.cpp")
+    "def_encoding_test.cpp"
+    "traits_test.cpp")
 
 add_executable(${PROJECT_NAME} ${TEST_SOURCES})
-add_test(NAME base64_test COMMAND ./base64_test)
+add_test(NAME ${PROJECT_NAME} COMMAND ./base64_test)
 
 # NOTE: Don't use space inside a generator expression here, because the function prematurely breaks the expression into
 # multiple lines. https://cmake.org/pipermail/cmake/2018-April/067422.html
@@ -22,4 +23,4 @@ target_compile_options(
 
 message(STATUS "CMAKE_CURRENT_BINARY_DIR=" ${CMAKE_CURRENT_BINARY_DIR})
 
-set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 17)
+set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)

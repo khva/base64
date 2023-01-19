@@ -15,6 +15,7 @@ namespace base64
     // encode functions (declaration)
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
+    template <typename encoding_traits = def_encoding_traits>
     size_t calc_encoded_size(size_t raw_size);
 
     template <typename encoding_traits = def_encoding_traits>
@@ -33,9 +34,18 @@ namespace base64
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
+    template <typename encoding_traits>
     inline size_t calc_encoded_size(size_t raw_size)
     {
-        return 4 * ((raw_size + 2) / 3);
+        if constexpr (encoding_traits::has_pad())
+        {
+            return 4 * ((raw_size + 2) / 3);
+        }
+        else
+        {
+            const size_t tail_size = raw_size % 3;
+            return 4 * (raw_size / 3) + (tail_size == 0 ? 0 : tail_size + 1);
+        }
     }
 
 
@@ -46,14 +56,13 @@ namespace base64
         const mutable_buffer    & base64_data)
     {
         const size_t raw_size = raw_data.size();
-        const size_t encoded_size = calc_encoded_size(raw_size);
+        const size_t encoded_size = calc_encoded_size<encoding_traits>(raw_size);
 
         if (base64_data.size() < encoded_size)
         {
             return encoded_size;
         }
 
-        constexpr std::string_view alphabet = encoding_traits::alphabet();
         const uint8_t * raw_ptr = raw_data.data();
         uint8_t * base64_ptr = base64_data.data();
 
@@ -65,23 +74,25 @@ namespace base64
 
             uint32_t triple = (octet_a << 0x10) + (octet_b << 0x08) + octet_c;
 
-            base64_ptr[j++] = static_cast<uint8_t>(alphabet[(triple >> 3 * 6) & 0x3F]);
-            base64_ptr[j++] = static_cast<uint8_t>(alphabet[(triple >> 2 * 6) & 0x3F]);
-            base64_ptr[j++] = static_cast<uint8_t>(alphabet[(triple >> 1 * 6) & 0x3F]);
-            base64_ptr[j++] = static_cast<uint8_t>(alphabet[(triple >> 0 * 6) & 0x3F]);
+            base64_ptr[j++] = encoding_traits::char_at((triple >> 3 * 6) & 0x3F);
+            base64_ptr[j++] = encoding_traits::char_at((triple >> 2 * 6) & 0x3F);
+            base64_ptr[j++] = encoding_traits::char_at((triple >> 1 * 6) & 0x3F);
+            base64_ptr[j++] = encoding_traits::char_at((triple >> 0 * 6) & 0x3F);
         }
 
-        const size_t tail_size = raw_size % 3;
-        constexpr const uint8_t pad = static_cast<uint8_t>(encoding_traits::pad());
+        if constexpr (encoding_traits::has_pad())
+        {
+            const size_t tail_size = raw_size % 3;
 
-        if (tail_size == 2)
-        {
-            base64_ptr[encoded_size - 1] = pad;
-        }
-        else if (tail_size == 1)
-        {
-            base64_ptr[encoded_size - 1] = pad;
-            base64_ptr[encoded_size - 2] = pad;
+            if (tail_size == 2)
+            {
+                base64_ptr[encoded_size - 1] = encoding_traits::pad();
+            }
+            else if (tail_size == 1)
+            {
+                base64_ptr[encoded_size - 1] = encoding_traits::pad();
+                base64_ptr[encoded_size - 2] = encoding_traits::pad();
+            }
         }
 
         return 0;

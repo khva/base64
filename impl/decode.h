@@ -51,18 +51,25 @@ namespace base64
         const size_t encoded_size = base64_data.size();
         size_t raw_size = 3 * (encoded_size / 4);
 
-        if (encoded_size > 0)
+        if constexpr (encoding_traits::has_pad())
         {
-            const uint8_t * base64_ptr = base64_data.data();
-            constexpr const uint8_t pad = static_cast<uint8_t>(encoding_traits::pad());
-
-            if (base64_ptr[encoded_size - 1] == pad)
+            if (encoded_size > 0)
             {
-                --raw_size;
+                const uint8_t * base64_ptr = base64_data.data();
 
-                if (encoded_size > 1 && base64_ptr[encoded_size - 2] == pad)
+                if (base64_ptr[encoded_size - 1] == encoding_traits::pad())
+                {
                     --raw_size;
+
+                    if (encoded_size > 1 && base64_ptr[encoded_size - 2] == encoding_traits::pad())
+                        --raw_size;
+                }
             }
+        }
+        else
+        {
+            const size_t tail_size = raw_size % 3;
+            raw_size += tail_size == 0 ? 0 : tail_size - 1;
         }
 
         return raw_size;
@@ -84,38 +91,74 @@ namespace base64
         const const_buffer      & base64_data,
         const mutable_buffer    & raw_data)
     {
-        const size_t raw_size = calc_decoded_size(base64_data);
+        const size_t raw_size = calc_decoded_size<encoding_traits>(base64_data);
 
+        // TODO: check base64_data size
         if (raw_data.size() < raw_size)
         {
             return raw_size;
         }
 
-        const size_t encoded_size = base64_data.size();
-        constexpr const uint8_t pad = static_cast<uint8_t>(encoding_traits::pad());
-
         auto index_of = [](uint8_t symbol) -> uint32_t
         {
-            const size_t index = encoding_traits::index_of(static_cast<char>(symbol));
-            return index == encoding_traits::invalid_index ? 0 : static_cast<uint32_t>(index);
+            if constexpr (encoding_traits::has_pad())
+            {
+                if (symbol == encoding_traits::pad())
+                    return 0;
+            }
+            const uint32_t index = encoding_traits::index_of(symbol);
+            return index == encoding_traits::invalid_index() ? 0 : index;
         };
 
+        auto calc_triple = [](uint32_t sextet_a, uint32_t sextet_b, uint32_t sextet_c, uint32_t sextet_d) -> uint32_t
+        {
+            return (sextet_a << 3 * 6) + (sextet_b << 2 * 6) + (sextet_c << 1 * 6) + (sextet_d << 0 * 6);
+        };
+
+        const size_t encoded_size = 4 * (base64_data.size() / 4);
+        const size_t tail_size = base64_data.size() - encoded_size;
         const uint8_t * base64_ptr = base64_data.data();
         uint8_t * raw_ptr = raw_data.data();
 
-        for (size_t i = 0, j = 0; i < encoded_size;)
+        // TODO: stop calculation when find bad symbol
+        size_t raw_pos = 0;
+        for (size_t i = 0; i < encoded_size;)
         {
-            uint32_t sextet_a = base64_ptr[i] == pad ? 0 & i++ : index_of(base64_ptr[i++]);
-            uint32_t sextet_b = base64_ptr[i] == pad ? 0 & i++ : index_of(base64_ptr[i++]);
-            uint32_t sextet_c = base64_ptr[i] == pad ? 0 & i++ : index_of(base64_ptr[i++]);
-            uint32_t sextet_d = base64_ptr[i] == pad ? 0 & i++ : index_of(base64_ptr[i++]);
+            const uint32_t sextet_a = index_of(base64_ptr[i++]);
+            const uint32_t sextet_b = index_of(base64_ptr[i++]);
+            const uint32_t sextet_c = index_of(base64_ptr[i++]);
+            const uint32_t sextet_d = index_of(base64_ptr[i++]);
 
-            uint32_t triple =
-                (sextet_a << 3 * 6) + (sextet_b << 2 * 6) + (sextet_c << 1 * 6) + (sextet_d << 0 * 6);
+            const uint32_t triple = calc_triple(sextet_a, sextet_b, sextet_c, sextet_d);
 
-            if (j < raw_size) raw_ptr[j++] = (triple >> 2 * 8) & 0xFF;
-            if (j < raw_size) raw_ptr[j++] = (triple >> 1 * 8) & 0xFF;
-            if (j < raw_size) raw_ptr[j++] = (triple >> 0 * 8) & 0xFF;
+            assert(raw_pos < raw_size);
+            raw_ptr[raw_pos++] = (triple >> 2 * 8) & 0xFF;
+
+            if (raw_pos < raw_size)
+                raw_ptr[raw_pos++] = (triple >> 1 * 8) & 0xFF;
+
+            if (raw_pos < raw_size)
+                raw_ptr[raw_pos++] = (triple >> 0 * 8) & 0xFF;
+        }
+
+        if constexpr (!encoding_traits::has_pad())
+        {
+            assert(tail_size == 0 || tail_size == 2 || tail_size == 3);
+
+            if (tail_size > 0)
+            {
+                const uint32_t sextet_a = index_of(base64_ptr[encoded_size]);
+                const uint32_t sextet_b = tail_size > 1 ? index_of(base64_ptr[encoded_size + 1]) : 0;
+                const uint32_t sextet_c = tail_size > 2 ? index_of(base64_ptr[encoded_size + 2]) : 0;
+
+                const uint32_t triple = calc_triple(sextet_a, sextet_b, sextet_c, 0);
+
+                assert(raw_pos < raw_size);
+                raw_ptr[raw_pos++] = (triple >> 2 * 8) & 0xFF;
+                
+                if (raw_pos < raw_size)
+                    raw_ptr[raw_pos++] = (triple >> 1 * 8) & 0xFF;
+            }
         }
 
         return 0;
@@ -133,4 +176,3 @@ namespace base64
 
 
 }   // namespace base64
-
