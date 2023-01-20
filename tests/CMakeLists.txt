@@ -19,7 +19,7 @@ add_test(NAME ${PROJECT_NAME} COMMAND ./base64_test)
 set(SJTEST_GCC_FLAGS -Wall -Wextra -Wpedantic)
 set(SJTEST_CLANG_FLAGS -Weverything -Wno-global-constructors -Wno-weak-vtables)
 target_compile_options(
-  ${PROJECT_NAME} PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX> $<$<CXX_COMPILER_ID:GNU>:${SJTEST_GCC_FLAGS}>
+  ${PROJECT_NAME} PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX /utf-8> $<$<CXX_COMPILER_ID:GNU>:${SJTEST_GCC_FLAGS}>
                        $<$<CXX_COMPILER_ID:Clang>:${SJTEST_CLANG_FLAGS}>)
 
 message(STATUS "CMAKE_CURRENT_BINARY_DIR=" ${CMAKE_CURRENT_BINARY_DIR})
