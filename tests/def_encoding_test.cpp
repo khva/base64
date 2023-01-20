@@ -468,9 +468,9 @@ TEST_CASE("encode_utf8")
 {
     using namespace base64;
 
-    constexpr std::basic_string_view<char8_t> russian =
+    const std::basic_string_view<char8_t> russian =
         u8"«Любая достаточно развитая технология неотличима от магии» — третий закон Артура Кларка.";
-    constexpr size_t russian_size = russian.size();
+    const size_t russian_size = russian.size();
 
     constexpr std::string_view russian_base64 =
         "wqvQm9GO0LHQsNGPINC00L7RgdGC0LDRgtC+0YfQvdC+INGA0LDQt9Cy0LjRgtCw0Y8g0YLQtdGF0L3QvtC70L7Qs9"
@@ -478,8 +478,8 @@ TEST_CASE("encode_utf8")
         "vtC9INCQ0YDRgtGD0YDQsCDQmtC70LDRgNC60LAu";
     constexpr size_t russian_base64_size = russian_base64.size();
 
-    constexpr std::basic_string_view<char8_t> japanese = u8"かたつぶりそろそろ登れ富士の山";
-    constexpr size_t japanese_size = japanese.size();
+    const std::basic_string_view<char8_t> japanese = u8"かたつぶりそろそろ登れ富士の山";
+    const size_t japanese_size = japanese.size();
 
     constexpr std::string_view japanese_base64 = 
         "44GL44Gf44Gk44G244KK44Gd44KN44Gd44KN55m744KM5a+M5aOr44Gu5bGx";
@@ -509,17 +509,17 @@ TEST_CASE("decode_utf8")
 {
     using namespace base64;
 
-    constexpr std::basic_string_view<char8_t> russian =
+    const std::basic_string_view<char8_t> russian =
         u8"«Любая достаточно развитая технология неотличима от магии» — третий закон Артура Кларка.";
-    constexpr size_t russian_size = russian.size();
+    const size_t russian_size = russian.size();
 
     constexpr std::string_view russian_base64 =
         "wqvQm9GO0LHQsNGPINC00L7RgdGC0LDRgtC+0YfQvdC+INGA0LDQt9Cy0LjRgtCw0Y8g0YLQtdGF0L3QvtC70L7Qs9"
         "C40Y8g0L3QtdC+0YLQu9C40YfQuNC80LAg0L7RgiDQvNCw0LPQuNC4wrsg4oCUINGC0YDQtdGC0LjQuSDQt9Cw0LrQ"
         "vtC9INCQ0YDRgtGD0YDQsCDQmtC70LDRgNC60LAu";
 
-    constexpr std::basic_string_view<char8_t> japanese = u8"かたつぶりそろそろ登れ富士の山";
-    constexpr size_t japanese_size = japanese.size();
+    const std::basic_string_view<char8_t> japanese = u8"かたつぶりそろそろ登れ富士の山";
+    const size_t japanese_size = japanese.size();
 
     constexpr std::string_view japanese_base64 =
         "44GL44Gf44Gk44G244KK44Gd44KN44Gd44KN55m744KM5a+M5aOr44Gu5bGx";
