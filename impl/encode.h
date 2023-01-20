@@ -3,6 +3,7 @@
 
 #include "buffers.h"
 #include "encoding_traits.h"
+#include "errors.h"
 #include "make_buffer.h"
 
 #include <cassert>
@@ -19,12 +20,12 @@ namespace base64
     size_t calc_encoded_size(size_t raw_size);
 
     template <typename encoding_traits = def_encoding_t>
-    size_t encode(
-        const const_buffer_t      & raw_data,
-        const mutable_buffer_t    & base64_data);
+    error_code_t encode(
+        const const_buffer_t    & raw_data,
+        const mutable_buffer_t  & base64_data);
 
     template <typename raw_array, typename base64_array, typename encoding_traits = def_encoding_t>
-    size_t encode(
+    error_code_t encode(
         const raw_array         & raw_data,
         base64_array            & base64_data);
 
@@ -51,16 +52,17 @@ namespace base64
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     template <typename encoding_traits>
-    size_t encode(
-        const const_buffer_t      & raw_data,
-        const mutable_buffer_t    & base64_data)
+    error_code_t encode(
+        const const_buffer_t    & raw_data,
+        const mutable_buffer_t  & base64_data)
     {
         const size_t raw_size = raw_data.size();
         const size_t encoded_size = calc_encoded_size<encoding_traits>(raw_size);
+        const size_t base64_size = base64_data.size();
 
-        if (base64_data.size() < encoded_size)
+        if (base64_size < encoded_size)
         {
-            return encoded_size;
+            return detail::insufficient_buffer_size_error(base64_size, encoded_size);
         }
 
         const uint8_t * raw_ptr = raw_data.data();
@@ -95,13 +97,13 @@ namespace base64
             }
         }
 
-        return 0;
+        return error_code_t{};
     }
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     template <typename raw_array, typename base64_array, typename encoding_traits>
-    size_t encode(
+    error_code_t encode(
         const raw_array         & raw_data,
         base64_array            & base64_data )
     {
