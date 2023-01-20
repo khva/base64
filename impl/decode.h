@@ -11,41 +11,25 @@ namespace base64
 {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    // interface functions declaration
+    // decode functions declaration
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
+    template <typename encoding_traits>
+    size_t calc_decoded_size_impl(const const_buffer_t & base64_data);
 
-    template <typename encoding_traits = def_encoding_t>
-    size_t calc_decoded_size(
-        const const_buffer_t      & base64_data);
-
-
-    template <typename base64_array, typename encoding_traits = def_encoding_t>
-    size_t calc_decoded_size(
-        const base64_array      & base64_data);
-
-
-    template <typename encoding_traits = def_encoding_t>
-    error_code_t decode(
+    template <typename encoding_traits>
+    error_code_t decode_impl(
         const const_buffer_t      & base64_data,
         const mutable_buffer_t    & raw_data);
 
 
-    template <typename base64_array, typename raw_array, typename encoding_traits = def_encoding_t>
-    error_code_t decode(
-        const base64_array      & base64_data,
-        raw_array               & raw_data);
-
-
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    // interface functions definition
+    // decode functions definition
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     template <typename encoding_traits>
-    size_t calc_decoded_size(
-        const const_buffer_t      & base64_data)
-
+    size_t calc_decoded_size_impl(const const_buffer_t & base64_data)
     {
         const size_t encoded_size = base64_data.size();
         size_t raw_size = 3 * (encoded_size / 4);
@@ -67,7 +51,7 @@ namespace base64
         }
         else
         {
-            const size_t tail_size = raw_size % 3;
+            const size_t tail_size = encoded_size % 4;
             raw_size += tail_size == 0 ? 0 : tail_size - 1;
         }
 
@@ -76,21 +60,12 @@ namespace base64
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    template <typename base64_array, typename encoding_traits>
-    size_t calc_decoded_size(
-        const base64_array      & base64_data)
-    {
-        return calc_decoded_size<encoding_traits>(make_const_buffer(base64_data));
-    }
-
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////
     template <typename encoding_traits>
-    error_code_t decode(
+    error_code_t decode_impl(
         const const_buffer_t      & base64_data,
         const mutable_buffer_t    & raw_data)
     {
-        const size_t raw_size = calc_decoded_size<encoding_traits>(base64_data);
+        const size_t raw_size = calc_decoded_size_impl<encoding_traits>(base64_data);
         const size_t raw_buffer_size = raw_data.size();
         const size_t base64_buffer_size = base64_data.size();
 
@@ -183,16 +158,5 @@ namespace base64
 
         return res_code;
     }
-
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    template <typename base64_array, typename raw_array, typename encoding_traits>
-    error_code_t decode(
-        const base64_array      & base64_data,
-        raw_array               & raw_data)
-    {
-        return decode<encoding_traits>(make_const_buffer(base64_data), make_mutable_buffer(raw_data));
-    }
-
 
 }   // namespace base64

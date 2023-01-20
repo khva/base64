@@ -13,30 +13,25 @@ namespace base64
 {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    // encode functions (declaration)
+    // encode functions declaration
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
-    template <typename encoding_traits = def_encoding_t>
-    size_t calc_encoded_size(size_t raw_size);
+    template <typename encoding_traits>
+    size_t calc_encoded_size_impl(size_t raw_size);
 
-    template <typename encoding_traits = def_encoding_t>
-    error_code_t encode(
+    template <typename encoding_traits>
+    error_code_t encode_impl(
         const const_buffer_t    & raw_data,
         const mutable_buffer_t  & base64_data);
 
-    template <typename raw_array, typename base64_array, typename encoding_traits = def_encoding_t>
-    error_code_t encode(
-        const raw_array         & raw_data,
-        base64_array            & base64_data);
-
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    // encode functions (definition)
+    // encode functions definition
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     template <typename encoding_traits>
-    inline size_t calc_encoded_size(size_t raw_size)
+    inline size_t calc_encoded_size_impl(size_t raw_size)
     {
         if constexpr (encoding_traits::has_pad())
         {
@@ -52,12 +47,12 @@ namespace base64
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     template <typename encoding_traits>
-    error_code_t encode(
+    error_code_t encode_impl(
         const const_buffer_t    & raw_data,
         const mutable_buffer_t  & base64_data)
     {
         const size_t raw_size = raw_data.size();
-        const size_t encoded_size = calc_encoded_size<encoding_traits>(raw_size);
+        const size_t encoded_size = calc_encoded_size_impl<encoding_traits>(raw_size);
         const size_t base64_size = base64_data.size();
 
         if (base64_size < encoded_size)
@@ -99,16 +94,5 @@ namespace base64
 
         return error_code_t{};
     }
-
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    template <typename raw_array, typename base64_array, typename encoding_traits>
-    error_code_t encode(
-        const raw_array         & raw_data,
-        base64_array            & base64_data )
-    {
-        return encode<encoding_traits>(make_const_buffer(raw_data), make_mutable_buffer(base64_data));
-    }
-
 
 }   // namespace base64
