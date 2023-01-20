@@ -471,6 +471,8 @@ TEST_CASE("encode_utf8")
     const std::basic_string_view<char8_t> russian =
         u8"«Любая достаточно развитая технология неотличима от магии» — третий закон Артура Кларка.";
     const size_t russian_size = russian.size();
+    std::cout << "# russian text size: " << russian_size << std::endl;
+    std::cout << "# russian: '" << reinterpret_cast<const char *>(russian.data()) << "'" << std::endl;
 
     constexpr std::string_view russian_base64 =
         "wqvQm9GO0LHQsNGPINC00L7RgdGC0LDRgtC+0YfQvdC+INGA0LDQt9Cy0LjRgtCw0Y8g0YLQtdGF0L3QvtC70L7Qs9"
@@ -480,6 +482,8 @@ TEST_CASE("encode_utf8")
 
     const std::basic_string_view<char8_t> japanese = u8"かたつぶりそろそろ登れ富士の山";
     const size_t japanese_size = japanese.size();
+    std::cout << "# japanese text size: " << japanese_size << std::endl;
+    std::cout << "# japanese: '" << reinterpret_cast<const char*>(japanese.data()) << "'" << std::endl;
 
     constexpr std::string_view japanese_base64 = 
         "44GL44Gf44Gk44G244KK44Gd44KN44Gd44KN55m744KM5a+M5aOr44Gu5bGx";
