@@ -114,7 +114,7 @@ namespace base64
         uint8_t * raw_ptr = raw_data.data();
 
         size_t raw_pos = 0;
-        for (size_t i = 0; i < encoded_size;)
+        for (size_t i = 0; i < encoded_size && res_code;)
         {
             const uint32_t sextet_a = index_of(i++);
             const uint32_t sextet_b = index_of(i++);
@@ -138,7 +138,7 @@ namespace base64
             const size_t tail_size = base64_buffer_size - encoded_size;
             assert(tail_size == 0 || tail_size == 2 || tail_size == 3);
 
-            if (tail_size > 0)
+            if (tail_size > 0 && res_code)
             {
                 size_t tail_pos = encoded_size;
 

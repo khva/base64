@@ -2,6 +2,7 @@
 
 #include "buffers.h"
 
+#include <array>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -27,6 +28,13 @@ namespace base64
 
     template <typename pod_type, size_t array_size>
     const_buffer_t make_const_buffer(const pod_type (& data)[array_size]);
+
+    // std::array<> buffer makers
+    template <typename pod_type, size_t array_size>
+    mutable_buffer_t make_mutable_buffer(std::array<pod_type, array_size> & data);
+
+    template <typename pod_type, size_t array_size>
+    const_buffer_t make_const_buffer(const std::array<pod_type, array_size> & data);
 
     // std::vector<> buffer makers
     template <typename pod_type, typename allocator_type>
@@ -87,6 +95,20 @@ namespace base64
     inline const_buffer_t make_const_buffer(const pod_type (& data)[array_size])
     {
         return const_buffer_t(reinterpret_cast<const uint8_t *>(data), array_size * sizeof(pod_type));
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    template <typename pod_type, size_t array_size>
+    inline mutable_buffer_t make_mutable_buffer(std::array<pod_type, array_size> & data)
+    {
+        return mutable_buffer_t(reinterpret_cast<uint8_t *>(data.data()), array_size * sizeof(pod_type));
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    template <typename pod_type, size_t array_size>
+    inline const_buffer_t make_const_buffer(const std::array<pod_type, array_size> & data)
+    {
+        return const_buffer_t(reinterpret_cast<const uint8_t*>(data.data()), array_size * sizeof(pod_type));
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
