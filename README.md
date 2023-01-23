@@ -1,4 +1,4 @@
-# base64 - tiny C++ BASE64 library (header-only)
+# base64 - tiny C++ encoding & decoding library (header-only)
 
 [![C++](https://img.shields.io/badge/c%2B%2B-20-informational.svg)](https://shields.io/)
 [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://lbesson.mit-license.org/)
@@ -9,11 +9,11 @@
 
 ## Table of Contents
 - [Description](#description)
-- [How to use library](how-to-use-library)
-  - [Quick start](quick-start)
-  - [Base64 encoding](base64-encoding)
-  - [Base64 decoding](base64-decoding)
-  - [Error handling](error-handling)
+- [How to use library](#how-to-use-library)
+  - [Quick start](#quick-start)
+  - [Base64 encoding](#base64-encoding)
+  - [Base64 decoding](#base64-decoding)
+  - [Error handling](#error-handling)
 - [How to add library to your project](#how-to-add-library-to-your-project)
 - [Used third-party tools](#used-third-party-tools)
 
@@ -87,7 +87,7 @@ Both functions encode incoming data into Base64 and put the result into the outp
 
 Encoding functions return an error code of type `error_code_t`. The `error_code_t::no_error()` method returns `true` if encoding is successful. Possible error types:
  - `error_type_t::no_error` — no error
- - `error_type_t::insufficient_buffer_size` — insufficient size of output buffer `base64_data`
+ - `error_type_t::insufficient_buffer_size` — insufficient size of output buffer
 
 For more information about errors, see the [Error handling](error-handling) section.
 
@@ -113,10 +113,10 @@ void base64_encoding()
 {
     using namespace base64;
 
-	constexpr std::string_view video_attr = R"({"is_full_sreen":false,"window_size":{"width":400,"height":200}})";
-	std::string video_base64(calc_encoded_size_url(video_attr.size()), '\0');
-	encode_url(video_attr, video_base64);
-	
+    constexpr std::string_view video_attr = R"({"is_full_sreen":false,"window_size":{"width":400,"height":200}})";
+    std::string video_base64(calc_encoded_size_url(video_attr.size()), '\0');
+    encode_url(video_attr, video_base64);
+
     std::cout << "original video attributes: " << video_attr << std::endl;
     std::cout << "base64 video attributes:   " << video_base64 << std::endl;
 }
