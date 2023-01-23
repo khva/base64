@@ -64,7 +64,7 @@ const size_t decoded_size = base64::calc_decoded_size(data);  // 1.
 std::string decoded;
 decoded.resize(decoded_size);  // 2.
 
-base64::encode(data, decoded);  // 3.
+base64::decode(data, decoded);  // 3.
 assert(decoded == "0123456789");
 
 ```
@@ -89,7 +89,7 @@ Encoding functions return an error code of type `error_code_t`. The `error_code_
  - `error_type_t::no_error` — no error
  - `error_type_t::insufficient_buffer_size` — insufficient size of output buffer
 
-For more information about errors, see the [Error handling](error-handling) section.
+For more information about errors, see the [Error handling](#error-handling) section.
 
 **Important:** Encoding functions do not allocate any dynamic memory, so you need to allocate a buffer of sufficient size before encoding. To do this, use the output buffer size calculation functions:
 
