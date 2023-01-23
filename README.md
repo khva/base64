@@ -9,7 +9,7 @@
 
 ## Table of Contents
 - [Description](#description)
-- [How to use library](#how-to-use-library)
+- [How to use the library](#how-to-use-the-library)
   - [Quick start](#quick-start)
   - [Base64 encoding](#base64-encoding)
   - [Base64 decoding](#base64-decoding)
@@ -22,43 +22,43 @@
 The base64 library implements Base64 encoding and decoding functions.
 
 Its main features:
- - support different types of STL containers: `std::string`, `std::vector`, `std::string_view`, `std::array`
+ - header-only and easy to use
+ - supports different types of STL containers: `std::string`, `std::vector`, `std::string_view`, `std::array`
  - easily adaptable to use custom containers/buffers
- - support standard and URL alphabets
+ - supports standard and URL alphabets
  - easily adaptable to use custom Base64 alphabet
- - header-only
  - cross-platform (tested on GCC, Clang and MSVC)
  - no external dependencies (only the doctest library is used as part of the test subproject)
 
 
-## How to use library
-The top-level interface functions are defined in the header file _"base64/base64.h"_.
+## How to use the library
+The top-level interface functions are defined in the header file `base64/base64.h`.
 
 ### Quick start
-To encode data in Base64 you need:
- 1. calculate the size of output buffer
- 2. allocate a buffer of sufficient size
- 3. call the encoding function
-
+Example of encoding data in Base64:
 ```c++
-const std::string_view data = "0123456789";
-const size_t encoded_size = base64::calc_encoded_size(data.size());  // 1.
+constexpr std::string_view data = "0123456789";
 
+// calculate the size of output buffer
+const size_t encoded_size = base64::calc_encoded_size(data.size());
 std::string encoded;
-encoded.resize(encoded_size);  // 2.
 
-base64::encode(data, encoded);  // 3.
+// allocate a buffer of sufficient size
+encoded.resize(encoded_size);
+
+// call the encoding function
+base64::encode(data, encoded);
 assert(encoded == "MDEyMzQ1Njc4OQ==");
 
 ```
 
-To decode data from Base64 you need:
+To decode data from Base64 you need to:
  1. calculate the size of output buffer
  2. allocate a buffer of sufficient size
  3. call the decoding function
 
 ```c++
-const std::string_view data = "MDEyMzQ1Njc4OQ==";
+constexpr std::string_view data = "MDEyMzQ1Njc4OQ==";
 const size_t decoded_size = base64::calc_decoded_size(data);  // 1.
 
 std::string decoded;
@@ -147,7 +147,7 @@ Encoding functions return an error code of type `error_code_t`. The `error_code_
  - `error_type_t::no_error` — no error
  - `error_type_t::insufficient_buffer_size` — insufficient size of output buffer
  - `error_type_t::invalid_buffer_size` — invalid size of input buffer, the buffer is truncated or corrupted
- - `error_type_t::non_alphabetic_symbol` — the input buffer contain non alphabetic symbol
+ - `error_type_t::non_alphabetic_symbol` — the input buffer contains a non alphabetic symbol
 
 For more information about errors, see the [Error handling](#error-handling) section.
 
