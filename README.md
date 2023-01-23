@@ -82,8 +82,8 @@ error_code_t encode_url(const raw_array & raw_data, base64_array & base64_data);
 Both functions encode incoming data into Base64 and put the result into the output buffer. The difference between these functions lies in the alphabets used. The `encode()` function use standard alphabet and the `encode_url()` use ["URL and Filename Safe"](https://www.rfc-editor.org/rfc/rfc3548) alphabet.
 
 **Parameters:**
- - `raw_data` — the input buffer containing data to encode, supported data types: [std::basic_string](https://en.cppreference.com/w/cpp/string/basic_string), [std::vector](https://en.cppreference.com/w/cpp/container/vector), [std::basic_string_view](https://en.cppreference.com/w/cpp/string/basic_string_view), [std::array](https://en.cppreference.com/w/cpp/container/array)
- - `base64_data` — the output buffer containing encoded data after successful execution, supported data types: [std::basic_string](https://en.cppreference.com/w/cpp/string/basic_string), [std::vector](https://en.cppreference.com/w/cpp/container/vector), [std::array](https://en.cppreference.com/w/cpp/container/array)
+ - `raw_data` — the input buffer containing data to encode, supported buffer types: [std::basic_string](https://en.cppreference.com/w/cpp/string/basic_string), [std::vector](https://en.cppreference.com/w/cpp/container/vector), [std::basic_string_view](https://en.cppreference.com/w/cpp/string/basic_string_view), [std::array](https://en.cppreference.com/w/cpp/container/array)
+ - `base64_data` — the output buffer containing encoded data after successful execution, supported buffer types: [std::basic_string](https://en.cppreference.com/w/cpp/string/basic_string), [std::vector](https://en.cppreference.com/w/cpp/container/vector), [std::array](https://en.cppreference.com/w/cpp/container/array)
 
 Encoding functions return an error code of type `error_code_t`. The `error_code_t::no_error()` method returns `true` if encoding is successful. Possible error types:
  - `error_type_t::no_error` — no error
@@ -91,13 +91,13 @@ Encoding functions return an error code of type `error_code_t`. The `error_code_
 
 For more information about errors, see the [Error handling](#error-handling) section.
 
-**Important:** Encoding functions do not allocate any dynamic memory, so you need to allocate a buffer of sufficient size before encoding. To do this, use the output buffer size calculation functions:
+**Important:** Encoding functions do not allocate any dynamic memory, so you need to allocate a buffer of sufficient size before encoding. To do this, use the encoded size calculation functions:
 
 ```c++
 size_t calc_encoded_size(size_t raw_size);
 size_t calc_encoded_size_url(size_t raw_size);
 ```
-Both functions calculate the size of the encoding buffer based on the size of the input data. Similar to encoding functions, the first function uses the standard alphabet, and the second uses the ["URL and Filename Safe"](https://www.rfc-editor.org/rfc/rfc3548) alphabet.
+Both functions calculate the encoding buffer size based on the size of the input data. Similar to encoding functions, the first function uses the standard alphabet, and the second uses the "URL and Filename Safe" alphabet.
 
 **Parameters:**
  - `raw_size` — the size of input buffer containing data to encode
@@ -113,7 +113,7 @@ void base64_encoding()
 {
     using namespace base64;
 
-    constexpr std::string_view video_attr = R"({"is_full_sreen":false,"window_size":{"width":400,"height":200}})";
+    constexpr std::string_view video_attr = R"({"is_full_screen":false,"window_size":{"width":400,"height":200}})";
     std::string video_base64(calc_encoded_size_url(video_attr.size()), '\0');
     encode_url(video_attr, video_base64);
 
@@ -123,14 +123,71 @@ void base64_encoding()
 ```
 Expected output:
 ```
-original video attributes: {"is_full_sreen":false,"window_size":{"width":400,"height":200}}
-base64 video attributes:   eyJpc19mdWxsX3NyZWVuIjpmYWxzZSwid2luZG93X3NpemUiOnsid2lkdGgiOjQwMCwiaGVpZ2h0IjoyMDB9fQ
+original video attributes: {"is_full_screen":false,"window_size":{"width":400,"height":200}}
+base64 video attributes:   eyJpc19mdWxsX3NjcmVlbiI6ZmFsc2UsIndpbmRvd19zaXplIjp7IndpZHRoIjo0MDAsImhlaWdodCI6MjAwfX0
 ```
 
 
 ### Base64 decoding
 There are two decoding functions in _"base64.h"_:
-TODO: add description
+```c++
+template <typename base64_array, typename raw_array>
+error_code_t decode(const base64_array & base64_data, raw_array & raw_data);
+
+template <typename base64_array, typename raw_array>
+error_code_t decode_url(const base64_array & base64_data, raw_array & raw_data);
+```
+Both functions decode incoming data from Base64 and put the result into the output buffer. The difference between these functions lies in the alphabets used. The `decode()` function use standard alphabet and the `decode_url()` use ["URL and Filename Safe"](https://www.rfc-editor.org/rfc/rfc3548) alphabet.
+
+**Parameters:**
+ - `base64_data` — the input buffer containing encoded data, supported buffer types: [std::basic_string](https://en.cppreference.com/w/cpp/string/basic_string), [std::vector](https://en.cppreference.com/w/cpp/container/vector), [std::basic_string_view](https://en.cppreference.com/w/cpp/string/basic_string_view), [std::array](https://en.cppreference.com/w/cpp/container/array)
+ - `raw_data` — the output buffer containing decoded data after successful execution, supported buffer types: [std::basic_string](https://en.cppreference.com/w/cpp/string/basic_string), [std::vector](https://en.cppreference.com/w/cpp/container/vector), [std::array](https://en.cppreference.com/w/cpp/container/array)
+
+Encoding functions return an error code of type `error_code_t`. The `error_code_t::no_error()` method returns `true` if encoding is successful. Possible error types:
+ - `error_type_t::no_error` — no error
+ - `error_type_t::insufficient_buffer_size` — insufficient size of output buffer
+ - `error_type_t::invalid_buffer_size` — invalid size of input buffer, the buffer is truncated or corrupted
+ - `error_type_t::non_alphabetic_symbol` — the input buffer contain non alphabetic symbol
+
+For more information about errors, see the [Error handling](#error-handling) section.
+
+**Important:** Decoding functions do not allocate any dynamic memory, so you need to allocate a buffer of sufficient size before decoding. To do this, use the decoded size calculation functions:
+```c++
+template <typename base64_array>
+size_t calc_decoded_size(const base64_array & base64_data);
+
+template <typename base64_array>
+size_t calc_decoded_size_url(const base64_array & base64_data);
+```
+Both functions calculate the decoding buffer size based on the encoded data. Similar to decoding functions, the first function uses the standard alphabet, and the second uses the "URL and Filename Safe" alphabet.
+
+**Parameters:**
+ - `base64_data` — the input buffer containing data to decode
+
+The calculation functions never fail.
+
+#### Example 2: Base64 decoding
+```c++
+#include "base64.h"
+#include <iostream>
+
+void base64_decoding()
+{
+    using namespace base64;
+
+    constexpr std::string_view video_base64 = "eyJpc19mdWxsX3NjcmVlbiI6ZmFsc2UsIndpbmRvd19zaXplIjp7IndpZHRoIjo0MDAsImhlaWdodCI6MjAwfX0";
+    std::string video_attr(calc_decoded_size_url(video_base64), '\0');
+    decode_url(video_base64, video_attr);
+
+    std::cout << "base64 video attributes:  " << video_base64 << std::endl;
+    std::cout << "decoded video attributes: " << video_attr << std::endl;
+}
+```
+Expected output:
+```
+base64 video attributes:  eyJpc19mdWxsX3NjcmVlbiI6ZmFsc2UsIndpbmRvd19zaXplIjp7IndpZHRoIjo0MDAsImhlaWdodCI6MjAwfX0
+decoded video attributes: {"is_full_screen":false,"window_size":{"width":400,"height":200}}
+```
 
 
 ### Error handling
