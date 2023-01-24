@@ -17,7 +17,7 @@ namespace base64
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     template <typename encoding_traits>
-    size_t calc_encoded_size_impl(size_t raw_size);
+    size_t calc_encoded_size_impl(size_t raw_size) noexcept;
 
     template <typename encoding_traits>
     error_code_t encode_impl(
@@ -31,7 +31,7 @@ namespace base64
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     template <typename encoding_traits>
-    inline size_t calc_encoded_size_impl(size_t raw_size)
+    inline size_t calc_encoded_size_impl(size_t raw_size) noexcept
     {
         if constexpr (encoding_traits::has_pad())
         {

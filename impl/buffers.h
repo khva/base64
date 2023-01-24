@@ -15,18 +15,18 @@ namespace base64
     class mutable_buffer_t
     {
     public:
-        mutable_buffer_t() = default;
-        ~mutable_buffer_t() = default;
+        mutable_buffer_t() noexcept = default;
+        ~mutable_buffer_t() noexcept = default;
 
-        mutable_buffer_t(uint8_t * data, size_t byte_count);
+        mutable_buffer_t(uint8_t * data, size_t byte_count) noexcept;
 
-        mutable_buffer_t(const mutable_buffer_t & other) = default;
-        mutable_buffer_t & operator=(const mutable_buffer_t & other) = default;
+        mutable_buffer_t(const mutable_buffer_t & other) noexcept = default;
+        mutable_buffer_t & operator=(const mutable_buffer_t & other) noexcept = default;
 
-        void swap(mutable_buffer_t & other);
+        void swap(mutable_buffer_t & other) noexcept;
 
-        uint8_t * data() const;
-        size_t size() const;
+        uint8_t * data() const noexcept;
+        size_t size() const noexcept;
 
     private:
         uint8_t   * m_data = nullptr;
@@ -41,21 +41,18 @@ namespace base64
     class const_buffer_t
     {
     public:
-        const_buffer_t() = default;
-        ~const_buffer_t() = default;
+        const_buffer_t() noexcept = default;
+        ~const_buffer_t() noexcept = default;
 
-        const_buffer_t(const uint8_t * data, size_t byte_count);
+        const_buffer_t(const uint8_t * data, size_t byte_count) noexcept ;
 
-        const_buffer_t(const const_buffer_t & other) = default;
-        const_buffer_t & operator=(const const_buffer_t & other) = default;
+        const_buffer_t(const const_buffer_t & other) noexcept = default;
+        const_buffer_t & operator=(const const_buffer_t & other) noexcept = default;
 
-        const_buffer_t(const mutable_buffer_t & other);
-        const_buffer_t & operator=(const mutable_buffer_t & other);
+        void swap(const_buffer_t & other) noexcept;
 
-        void swap(const_buffer_t & other);
-
-        const uint8_t * data() const;
-        size_t size() const;
+        const uint8_t * data() const noexcept;
+        size_t size() const noexcept;
 
     private:
         const uint8_t   * m_data = nullptr;
@@ -69,7 +66,7 @@ namespace base64
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    inline mutable_buffer_t::mutable_buffer_t(uint8_t * data, size_t byte_count)
+    inline mutable_buffer_t::mutable_buffer_t(uint8_t * data, size_t byte_count) noexcept
         : m_data(data)
         , m_size(byte_count)
     {
@@ -78,7 +75,7 @@ namespace base64
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    inline void mutable_buffer_t::swap(mutable_buffer_t & other)
+    inline void mutable_buffer_t::swap(mutable_buffer_t & other) noexcept
     {
         std::swap(m_data, other.m_data);
         std::swap(m_size, other.m_size);
@@ -86,14 +83,14 @@ namespace base64
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    inline uint8_t * mutable_buffer_t::data() const
+    inline uint8_t * mutable_buffer_t::data() const noexcept
     {
         return m_data;
     }
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    inline size_t mutable_buffer_t::size() const
+    inline size_t mutable_buffer_t::size() const noexcept
     {
         return m_size;
     }
@@ -105,7 +102,7 @@ namespace base64
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    inline const_buffer_t::const_buffer_t(const uint8_t * data, size_t byte_count)
+    inline const_buffer_t::const_buffer_t(const uint8_t * data, size_t byte_count) noexcept
         : m_data(data)
         , m_size(byte_count)
     {
@@ -114,23 +111,7 @@ namespace base64
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    inline const_buffer_t::const_buffer_t(const mutable_buffer_t & other)
-        : m_data(other.data())
-        , m_size(other.size())
-    {
-    }
-
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    inline const_buffer_t & const_buffer_t::operator=(const mutable_buffer_t & other)
-    {
-        const_buffer_t(other).swap(*this);
-        return *this;
-    }
-
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    inline void const_buffer_t::swap(const_buffer_t & other)
+    inline void const_buffer_t::swap(const_buffer_t & other) noexcept
     {
         std::swap(m_data, other.m_data);
         std::swap(m_size, other.m_size);
@@ -138,14 +119,14 @@ namespace base64
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    inline const uint8_t * const_buffer_t::data() const
+    inline const uint8_t * const_buffer_t::data() const noexcept
     {
         return m_data;
     }
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    inline size_t const_buffer_t::size() const
+    inline size_t const_buffer_t::size() const noexcept
     {
         return m_size;
     }

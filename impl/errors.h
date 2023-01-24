@@ -28,8 +28,8 @@ namespace base64
     class error_code_t
     {
     public:
-        error_code_t() = default;
-        error_code_t(error_type_t code, std::string msg) : m_msg(std::move(msg)), m_code(code) {}
+        error_code_t() noexcept = default;
+        error_code_t(error_type_t code, std::string msg) noexcept : m_msg(std::move(msg)), m_code(code) {}
         ~error_code_t() noexcept = default;
 
         error_type_t type() const noexcept          {   return m_code;  }

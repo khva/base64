@@ -15,7 +15,7 @@ namespace base64
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     template <typename encoding_traits>
-    size_t calc_decoded_size_impl(const const_buffer_t & base64_data);
+    size_t calc_decoded_size_impl(const const_buffer_t & base64_data) noexcept;
 
     template <typename encoding_traits>
     error_code_t decode_impl(
@@ -29,7 +29,7 @@ namespace base64
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     template <typename encoding_traits>
-    size_t calc_decoded_size_impl(const const_buffer_t & base64_data)
+    size_t calc_decoded_size_impl(const const_buffer_t & base64_data) noexcept
     {
         const size_t encoded_size = base64_data.size();
         size_t raw_size = 3 * (encoded_size / 4);

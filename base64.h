@@ -11,8 +11,8 @@ namespace base64
     // encode functions declaration
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
-    size_t calc_encoded_size(size_t raw_size);
-    size_t calc_encoded_size_url(size_t raw_size);
+    size_t calc_encoded_size(size_t raw_size) noexcept;
+    size_t calc_encoded_size_url(size_t raw_size) noexcept;
 
     template <typename raw_array, typename base64_array>
     error_code_t encode(
@@ -31,10 +31,10 @@ namespace base64
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     template <typename base64_array>
-    size_t calc_decoded_size(const base64_array & base64_data);
+    size_t calc_decoded_size(const base64_array & base64_data) noexcept;
 
     template <typename base64_array>
-    size_t calc_decoded_size_url(const base64_array & base64_data);
+    size_t calc_decoded_size_url(const base64_array & base64_data) noexcept;
 
     template <typename base64_array, typename raw_array>
     error_code_t decode(
@@ -53,13 +53,13 @@ namespace base64
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    inline size_t calc_encoded_size(size_t raw_size)
+    inline size_t calc_encoded_size(size_t raw_size) noexcept
     {
         return calc_encoded_size_impl<def_encoding_t>(raw_size);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    inline size_t calc_encoded_size_url(size_t raw_size)
+    inline size_t calc_encoded_size_url(size_t raw_size) noexcept
     {
         return calc_encoded_size_impl<url_encoding_t>(raw_size);
     }
@@ -90,14 +90,14 @@ namespace base64
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     template <typename base64_array>
-    inline size_t calc_decoded_size(const base64_array & base64_data)
+    inline size_t calc_decoded_size(const base64_array & base64_data) noexcept
     {
         return calc_decoded_size_impl<def_encoding_t>(make_const_buffer(base64_data));
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     template <typename base64_array>
-    inline size_t calc_decoded_size_url(const base64_array & base64_data)
+    inline size_t calc_decoded_size_url(const base64_array & base64_data) noexcept
     {
         return calc_decoded_size_impl<url_encoding_t>(make_const_buffer(base64_data));
     }

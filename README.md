@@ -1,4 +1,4 @@
-# base64 - tiny C++ encoding & decoding library (header-only)
+# base64 - Base64 encoding & decoding library (written in modern C++)
 
 [![C++](https://img.shields.io/badge/c%2B%2B-20-informational.svg)](https://shields.io/)
 [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://lbesson.mit-license.org/)
@@ -25,9 +25,9 @@ Its main features:
  - header-only and easy to use
  - supports different types of STL containers: `std::string`, `std::vector`, `std::string_view`, `std::array`
  - easily adaptable to use custom containers/buffers
- - supports standard and URL alphabets
+ - supports [Base64](https://www.rfc-editor.org/rfc/rfc2045#section-6.8) and ["URL and Filename Safe" Base64](https://www.rfc-editor.org/rfc/rfc3548#section-4) alphabets
  - easily adaptable to use custom Base64 alphabet
- - cross-platform (tested on GCC, Clang and MSVC)
+ - cross-platform, it can be used on Linux, macOS and Windows (tested on GCC, Clang and MSVC)
  - no external dependencies (only the doctest library is used as part of the test subproject)
 
 
@@ -79,7 +79,7 @@ error_code_t encode(const raw_array & raw_data, base64_array & base64_data);
 template <typename raw_array, typename base64_array>
 error_code_t encode_url(const raw_array & raw_data, base64_array & base64_data);
 ```
-Both functions encode incoming data into Base64 and put the result into the output buffer. The difference between these functions lies in the alphabets used. The `encode()` function use standard Base64 alphabet and the `encode_url()` use ["URL and Filename Safe"](https://www.rfc-editor.org/rfc/rfc3548) Base64 alphabet.
+Both functions encode incoming data into Base64 and put the result into the output buffer. The difference between these functions lies in the alphabets used. The `encode()` function use [Base64](https://www.rfc-editor.org/rfc/rfc2045#section-6.8) alphabet and the `encode_url()` use ["URL and Filename Safe" Base64](https://www.rfc-editor.org/rfc/rfc3548#section-4) alphabet.
 
 **Parameters:**
  - `raw_data` — the input buffer containing data to encode, supported buffer types: [std::basic_string](https://en.cppreference.com/w/cpp/string/basic_string), [std::vector](https://en.cppreference.com/w/cpp/container/vector), [std::basic_string_view](https://en.cppreference.com/w/cpp/string/basic_string_view), [std::array](https://en.cppreference.com/w/cpp/container/array)
@@ -94,8 +94,8 @@ For more information about errors, see the [Error handling](#error-handling) sec
 **Important:** encoding functions do not allocate any dynamic memory, so you need to allocate a buffer of sufficient size before encoding. To do this, use the encoded size calculation functions:
 
 ```c++
-size_t calc_encoded_size(size_t raw_size);
-size_t calc_encoded_size_url(size_t raw_size);
+size_t calc_encoded_size(size_t raw_size) noexcept;
+size_t calc_encoded_size_url(size_t raw_size) noexcept;
 ```
 Both functions calculate the encoding buffer size based on the size of the input data. Similar to encoding functions, the first function uses the standard Base64 alphabet, and the second uses the "URL and Filename Safe" Base64 alphabet.
 
@@ -129,7 +129,7 @@ base64 video attributes:   eyJpc19mdWxsX3NjcmVlbiI6ZmFsc2UsIndpbmRvd19zaXplIjp7I
 
 
 ### Base64 decoding
-There are two decoding functions in _"base64.h"_:
+There are two decoding functions in `base64.h`:
 ```c++
 template <typename base64_array, typename raw_array>
 error_code_t decode(const base64_array & base64_data, raw_array & raw_data);
@@ -137,7 +137,7 @@ error_code_t decode(const base64_array & base64_data, raw_array & raw_data);
 template <typename base64_array, typename raw_array>
 error_code_t decode_url(const base64_array & base64_data, raw_array & raw_data);
 ```
-Both functions decode incoming data from Base64 and put the result into the output buffer. The difference between these functions lies in the alphabets used. The `decode()` function use standard Base64 alphabet and the `decode_url()` use ["URL and Filename Safe"](https://www.rfc-editor.org/rfc/rfc3548) Base64 alphabet.
+Both functions decode incoming data from Base64 and put the result into the output buffer. The difference between these functions lies in the alphabets used. The `decode()` function use [Base64](https://www.rfc-editor.org/rfc/rfc2045#section-6.8) alphabet and the `decode_url()` use ["URL and Filename Safe" Base64](https://www.rfc-editor.org/rfc/rfc3548#section-4) alphabet.
 
 **Parameters:**
  - `base64_data` — the input buffer containing encoded data, supported buffer types: [std::basic_string](https://en.cppreference.com/w/cpp/string/basic_string), [std::vector](https://en.cppreference.com/w/cpp/container/vector), [std::basic_string_view](https://en.cppreference.com/w/cpp/string/basic_string_view), [std::array](https://en.cppreference.com/w/cpp/container/array)
@@ -154,10 +154,10 @@ For more information about errors, see the [Error handling](#error-handling) sec
 **Important:** decoding functions do not allocate any dynamic memory, so you need to allocate a buffer of sufficient size before decoding. To do this, use the decoded size calculation functions:
 ```c++
 template <typename base64_array>
-size_t calc_decoded_size(const base64_array & base64_data);
+size_t calc_decoded_size(const base64_array & base64_data) noexcept;
 
 template <typename base64_array>
-size_t calc_decoded_size_url(const base64_array & base64_data);
+size_t calc_decoded_size_url(const base64_array & base64_data) noexcept;
 ```
 Both functions calculate the decoding buffer size based on the encoded data. Similar to decoding functions, the first function uses the standard Base64 alphabet, and the second uses the "URL and Filename Safe" Base64 alphabet.
 
@@ -191,5 +191,6 @@ decoded video attributes: {"is_full_screen":false,"window_size":{"width":400,"he
 
 
 ### Error handling
-TODO: add description
-
+The encoding and decoding functions return an error code of type `error_code_t`. The `error_code_t` has such methods:
+```c++
+```
