@@ -1,4 +1,4 @@
-# base64 - Base64 encoding & decoding library (written in modern C++)
+# base64 - modern C++ library for Base64 encoding & decoding
 
 [![C++](https://img.shields.io/badge/c%2B%2B-20-informational.svg)](https://shields.io/)
 [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://lbesson.mit-license.org/)
@@ -14,7 +14,7 @@
   - [Base64 encoding](#base64-encoding)
   - [Base64 decoding](#base64-decoding)
   - [Error handling](#error-handling)
-- [How to add library to your project](#how-to-add-library-to-your-project)
+- [How to add base64 library to your project](#how-to-add-base64-library-to-your-project)
 - [Additional information](#additional-information)
 
 
@@ -105,7 +105,7 @@ Both functions calculate the encoding buffer size based on the size of the input
 
 The calculation functions never fail.
 
-#### Example 1: Base64 encoding
+#### Example: Base64 encoding
 ```c++
 #include "base64.h"
 #include <iostream>
@@ -167,7 +167,7 @@ Both functions calculate the decoding buffer size based on the encoded data. Sim
 
 The calculation functions never fail.
 
-#### Example 2: Base64 decoding
+#### Example: Base64 decoding
 ```c++
 #include "base64.h"
 #include <iostream>
@@ -194,10 +194,10 @@ decoded video attributes: {"is_full_screen":false,"window_size":{"width":400,"he
 ### Error handling
 The encoding and decoding functions return an error code of type `error_code_t`. The `error_code_t` class contains an error code and an error message. The success of the encoding/decoding operation can be determined using the methods:
 ```c++
-bool no_error() const noexcept;
+bool has_error() const noexcept;
 explicit operator bool() const noexcept;
 ```
-Both methods return `true` if the operation was successful. If unsuccessful, you can find out the type of error using the method:
+Both methods return `true` if operation failed. You can find out the type of error using the method:
 ```c++
 error_type_t type() const noexcept;
 ```
@@ -213,7 +213,7 @@ const std::string & msg() const noexcept
 ```
 The `msg` method returns an empty string if there is no error.
 
-#### Example 3: Non-alphabetical character
+#### Example: non-alphabetical character in the input buffer
 ```c++
 #include "base64.h"
 #include <iostream>
@@ -226,11 +226,11 @@ void non_alphabetical_character()
     constexpr std::string_view wrong_data = "MDE(MzQ1Njc4OUFC";
 
     std::string decoded(calc_decoded_size(wrong_data), '\0');
-    const error_code_t code = decode(wrong_data, decoded);
+    const error_code_t error = decode(wrong_data, decoded);
 
-    if (!code)
+    if (error)
     {
-        std::cout << "An error has occurred. " << code.msg() << std::endl;
+        std::cout << "An error has occurred. " << error.msg() << std::endl;
         return;
     }
     std::cout << "decoded data: " << decoded << std::endl;
@@ -242,20 +242,19 @@ An error has occurred. The buffer has the non-alphabetical character 0x28 at ind
 ```
 
 
-## How to add library to your project
-The `base64` library can be added as a submodule:
- - `git submodule add https://github.com/khva/base64`
- - `git add .`
- - `git commit -m "add base64 library"`
- - `git push origin master`
+## How to add base64 library to your project
+The `base64` library can be added as a submodule. Example for adding library to the `third_party` directory in your project:
+```bash
+git submodule add https://github.com/khva/base64 third_party/base64
+```
 
 Another way is to download and copy the library code directly into your project:
  - copy the `base64.h` file to the folder intended for third-party libraries, for example, to `third_party/base64/base64.h`
  - copy the `impl` folder to the same path, for example, to `third_party/base64/impl`
- - add to project settings path to `base64.h`, for example, for CMake project: `include_directories(third_party/base64)`
+ - add `base64.h` path to project settings, for example, for CMake project: `include_directories(third_party/base64)`
 
 
 ## Additional information
 - the library was tested on compilers GCC 11.3, Apple Clang 13, MS Visual Studio 2019/2022
 - the minimum version of CMake is 3.15
-- the [doctest](https://github.com/doctest/doctest) framework version 2.4.9 is used for testing (as part of the project in the `tests\doctest` directory)
+- the [doctest](https://github.com/doctest/doctest) version 2.4.9 framework is used for testing (as part of the project in the `tests/doctest` directory)

@@ -16,11 +16,11 @@ TEST_CASE("url_encode_errors")
 
     const std::string_view data = "0123456789AB";
     std::string encoded;
-    const error_code_t code = encode_url(data, encoded);
+    const error_code_t error = encode_url(data, encoded);
 
-    REQUIRE(!code);
-    REQUIRE(code.type() == error_type_t::insufficient_buffer_size);
-    REQUIRE(code.msg() == "The buffer has insufficient size (required - 16, obtained - 0).");
+    REQUIRE(error);
+    REQUIRE(error.type() == error_type_t::insufficient_buffer_size);
+    REQUIRE(error.msg() == "The buffer has insufficient size (required - 16, obtained - 0).");
     REQUIRE(encoded.empty());
 }
 
@@ -34,23 +34,25 @@ TEST_CASE("url_decode_errors")
     const std::string_view bad_symbol = "MDEyMzQ1Nj*4OUFC";
 
     std::string decoded;
-    error_code_t code = decode_url(data, decoded);
+    error_code_t error = decode_url(data, decoded);
 
-    REQUIRE(!code);
-    REQUIRE(code.type() == error_type_t::insufficient_buffer_size);
-    REQUIRE(code.msg() == "The buffer has insufficient size (required - 12, obtained - 0).");
+    REQUIRE(error);
+    REQUIRE(error.type() == error_type_t::insufficient_buffer_size);
+    REQUIRE(error.msg() == "The buffer has insufficient size (required - 12, obtained - 0).");
     REQUIRE(decoded.empty());
 
     const size_t decoded_size = calc_decoded_size_url(data);
     decoded.resize(decoded_size);
 
-    code = decode_url(bad_buffer, decoded);
-    REQUIRE(code.type() == error_type_t::invalid_buffer_size);
-    REQUIRE(code.msg() == "The base64 buffer has invalid size of 13. The buffer size must be a multiple of 4 or have a remainder of division 2 and 3.");
+    error = decode_url(bad_buffer, decoded);
+    REQUIRE(error);
+    REQUIRE(error.type() == error_type_t::invalid_buffer_size);
+    REQUIRE(error.msg() == "The base64 buffer has invalid size of 13. The buffer size must be a multiple of 4 or have a remainder of division 2 and 3.");
 
-    code = decode_url(bad_symbol, decoded);
-    REQUIRE(code.type() == error_type_t::non_alphabetic_symbol);
-    REQUIRE(code.msg() == "The buffer has the non-alphabetical character 0x2A at index 10.");
+    error = decode_url(bad_symbol, decoded);
+    REQUIRE(error);
+    REQUIRE(error.type() == error_type_t::non_alphabetic_symbol);
+    REQUIRE(error.msg() == "The buffer has the non-alphabetical character 0x2A at index 10.");
 }
 
 
@@ -64,8 +66,8 @@ TEST_CASE("url_encode_empty_data")
     REQUIRE(encoded_size == expected_size);
 
     std::string encoded;
-    const error_code_t code = encode_url(data, encoded);
-    REQUIRE(code);
+    const error_code_t error = encode_url(data, encoded);
+    REQUIRE(!error);
     REQUIRE(encoded.empty());
 }
 
@@ -80,8 +82,8 @@ TEST_CASE("url_decode_empty_data")
     REQUIRE(decoded_size == expected_size);
 
     std::string decoded;
-    const error_code_t code = decode_url(data, decoded);
-    REQUIRE(code);
+    const error_code_t error = decode_url(data, decoded);
+    REQUIRE(!error);
     REQUIRE(decoded.empty());
 }
 
@@ -131,38 +133,38 @@ TEST_CASE("url_encode_with_tails_012")
 
     std::string encoded;
     encoded.resize(expected_size_1);
-    error_code_t code = encode_url(data_1, encoded);
-    REQUIRE(code);
+    error_code_t error = encode_url(data_1, encoded);
+    REQUIRE(!error);
     REQUIRE(encoded == expected_result_1);
 
     encoded.clear();
     encoded.resize(expected_size_2);
-    code = encode_url(data_2, encoded);
-    REQUIRE(code);
+    error = encode_url(data_2, encoded);
+    REQUIRE(!error);
     REQUIRE(encoded == expected_result_2);
 
     encoded.clear();
     encoded.resize(expected_size_3);
-    code = encode_url(data_3, encoded);
-    REQUIRE(code);
+    error = encode_url(data_3, encoded);
+    REQUIRE(!error);
     REQUIRE(encoded == expected_result_3);
 
     encoded.clear();
     encoded.resize(expected_size_10);
-    code = encode_url(data_10, encoded);
-    REQUIRE(code);
+    error = encode_url(data_10, encoded);
+    REQUIRE(!error);
     REQUIRE(encoded == expected_result_10);
 
     encoded.clear();
     encoded.resize(expected_size_11);
-    code = encode_url(data_11, encoded);
-    REQUIRE(code);
+    error = encode_url(data_11, encoded);
+    REQUIRE(!error);
     REQUIRE(encoded == expected_result_11);
 
     encoded.clear();
     encoded.resize(expected_size_12);
-    code = encode_url(data_12, encoded);
-    REQUIRE(code);
+    error = encode_url(data_12, encoded);
+    REQUIRE(!error);
     REQUIRE(encoded == expected_result_12);
 }
 
@@ -212,38 +214,38 @@ TEST_CASE("url_decode_with_tails_012")
 
     std::string decoded;
     decoded.resize(expected_size_1);
-    error_code_t code = decode_url(encoded_1, decoded);
-    REQUIRE(code);
+    error_code_t error = decode_url(encoded_1, decoded);
+    REQUIRE(!error);
     REQUIRE(decoded == expected_result_1);
 
     decoded.clear();
     decoded.resize(expected_size_2);
-    code = decode_url(encoded_2, decoded);
-    REQUIRE(code);
+    error = decode_url(encoded_2, decoded);
+    REQUIRE(!error);
     REQUIRE(decoded == expected_result_2);
 
     decoded.clear();
     decoded.resize(expected_size_3);
-    code = decode_url(encoded_3, decoded);
-    REQUIRE(code);
+    error = decode_url(encoded_3, decoded);
+    REQUIRE(!error);
     REQUIRE(decoded == expected_result_3);
 
     decoded.clear();
     decoded.resize(expected_size_10);
-    code = decode_url(encoded_10, decoded);
-    REQUIRE(code);
+    error = decode_url(encoded_10, decoded);
+    REQUIRE(!error);
     REQUIRE(decoded == expected_result_10);
 
     decoded.clear();
     decoded.resize(expected_size_11);
-    code = decode_url(encoded_11, decoded);
-    REQUIRE(code);
+    error = decode_url(encoded_11, decoded);
+    REQUIRE(!error);
     REQUIRE(decoded == expected_result_11);
 
     decoded.clear();
     decoded.resize(expected_size_12);
-    code = decode_url(encoded_12, decoded);
-    REQUIRE(code);
+    error = decode_url(encoded_12, decoded);
+    REQUIRE(!error);
     REQUIRE(decoded == expected_result_12);
 }
 
@@ -261,19 +263,19 @@ TEST_CASE("url_encode_to_different_storages")
 
     std::string encoded_string;
     encoded_string.resize(encoded_size);
-    error_code_t code = encode_url(data, encoded_string);
-    REQUIRE(code);
+    error_code_t error = encode_url(data, encoded_string);
+    REQUIRE(!error);
     REQUIRE(encoded_string == expected_result);
 
     std::array<uint8_t, expected_size> encoded_array;
-    code = encode_url(data, encoded_array);
-    REQUIRE(code);
+    error = encode_url(data, encoded_array);
+    REQUIRE(!error);
     REQUIRE(memcmp(encoded_array.data(), expected_result.data(), expected_size) == 0);
 
     std::vector<uint8_t> encoded_vector;
     encoded_vector.resize(encoded_size);
-    code = encode_url(data, encoded_vector);
-    REQUIRE(code);
+    error = encode_url(data, encoded_vector);
+    REQUIRE(!error);
     REQUIRE(memcmp(encoded_vector.data(), expected_result.data(), expected_size) == 0);
 }
 
@@ -291,19 +293,19 @@ TEST_CASE("url_decode_to_different_storages")
 
     std::string decoded_string;
     decoded_string.resize(decoded_size);
-    error_code_t code = decode_url(encoded, decoded_string);
-    REQUIRE(code);
+    error_code_t error = decode_url(encoded, decoded_string);
+    REQUIRE(!error);
     REQUIRE(decoded_string == expected_result);
 
     std::array<uint8_t, expected_size> encoded_array;
-    code = decode_url(encoded, encoded_array);
-    REQUIRE(code);
+    error = decode_url(encoded, encoded_array);
+    REQUIRE(!error);
     REQUIRE(memcmp(encoded_array.data(), expected_result.data(), expected_size) == 0);
 
     std::vector<uint8_t> decoded_vector;
     decoded_vector.resize(decoded_size);
-    code = decode_url(encoded, decoded_vector);
-    REQUIRE(code);
+    error = decode_url(encoded, decoded_vector);
+    REQUIRE(!error);
     REQUIRE(memcmp(decoded_vector.data(), expected_result.data(), expected_size) == 0);
 }
 
@@ -325,26 +327,26 @@ TEST_CASE("url_encode_from_different_storages")
 
     std::string encoded;
     encoded.resize(encoded_size);
-    error_code_t code = encode(data_array, encoded);
-    REQUIRE(code);
+    error_code_t error = encode(data_array, encoded);
+    REQUIRE(!error);
     REQUIRE(encoded == expected_result);
 
     encoded.erase();
     encoded.resize(encoded_size);
-    code = encode_url(data_string, encoded);
-    REQUIRE(code);
+    error = encode_url(data_string, encoded);
+    REQUIRE(!error);
     REQUIRE(encoded == expected_result);
 
     encoded.erase();
     encoded.resize(encoded_size);
-    code = encode_url(data_string_view, encoded);
-    REQUIRE(code);
+    error = encode_url(data_string_view, encoded);
+    REQUIRE(!error);
     REQUIRE(encoded == expected_result);
 
     encoded.erase();
     encoded.resize(encoded_size);
-    code = encode_url(data_vector, encoded);
-    REQUIRE(code);
+    error = encode_url(data_vector, encoded);
+    REQUIRE(!error);
     REQUIRE(encoded == expected_result);
 }
 
@@ -366,26 +368,26 @@ TEST_CASE("url_decode_from_different_storages")
 
     std::string decoded;
     decoded.resize(decoded_size);
-    error_code_t code = decode(encoded_array, decoded);
-    REQUIRE(code);
+    error_code_t error = decode(encoded_array, decoded);
+    REQUIRE(!error);
     REQUIRE(decoded == expected_result);
 
     decoded.erase();
     decoded.resize(decoded_size);
-    code = decode_url(encoded_string, decoded);
-    REQUIRE(code);
+    error = decode_url(encoded_string, decoded);
+    REQUIRE(!error);
     REQUIRE(decoded == expected_result);
 
     decoded.erase();
     decoded.resize(decoded_size);
-    code = decode_url(encoded_string_view, decoded);
-    REQUIRE(code);
+    error = decode_url(encoded_string_view, decoded);
+    REQUIRE(!error);
     REQUIRE(decoded == expected_result);
 
     decoded.erase();
     decoded.resize(decoded_size);
-    code = decode_url(encoded_vector, decoded);
-    REQUIRE(code);
+    error = decode_url(encoded_vector, decoded);
+    REQUIRE(!error);
     REQUIRE(decoded == expected_result);
 }
 
@@ -403,14 +405,14 @@ TEST_CASE("url_encode_to_c_array")
 
     char encoded_char_array[expected_size];
     mutable_adapter_t eca_adapter = make_mutable_adapter(encoded_char_array, expected_size);
-    error_code_t code = encode_url(data, eca_adapter);
-    REQUIRE(code);
+    error_code_t error = encode_url(data, eca_adapter);
+    REQUIRE(!error);
     REQUIRE(strncmp(encoded_char_array, expected_result.data(), expected_size) == 0);
 
     std::unique_ptr<char[]> encoded_unique_ptr{ new char[expected_size] };
     mutable_adapter_t eup_adapter = make_mutable_adapter(encoded_unique_ptr.get(), expected_size);
-    code = encode(data, eup_adapter);
-    REQUIRE(code);
+    error = encode(data, eup_adapter);
+    REQUIRE(!error);
     REQUIRE(strncmp(encoded_unique_ptr.get(), expected_result.data(), expected_size) == 0);
 }
 
@@ -428,14 +430,14 @@ TEST_CASE("url_decode_to_c_array")
 
     char decoded_char_array[expected_size];
     mutable_adapter_t dca_adapter = make_mutable_adapter(decoded_char_array, expected_size);
-    error_code_t code = decode_url(encoded, dca_adapter);
-    REQUIRE(code);
+    error_code_t error = decode_url(encoded, dca_adapter);
+    REQUIRE(!error);
     REQUIRE(strncmp(decoded_char_array, expected_result.data(), expected_size) == 0);
 
     std::unique_ptr<char[]> decoded_unique_ptr{ new char[expected_size] };
     mutable_adapter_t dup_adapter = make_mutable_adapter(decoded_unique_ptr.get(), expected_size);
-    code = decode(encoded, dup_adapter);
-    REQUIRE(code);
+    error = decode(encoded, dup_adapter);
+    REQUIRE(!error);
     REQUIRE(strncmp(decoded_unique_ptr.get(), expected_result.data(), expected_size) == 0);
 }
 
@@ -454,15 +456,15 @@ TEST_CASE("url_encode_from_null_terminated_strings")
 
     std::string encoded;
     encoded.resize(encoded_size);
-    error_code_t code = encode_url(
+    error_code_t error = encode_url(
         make_const_adapter(data_char_array, strlen(data_char_array)), encoded);
-    REQUIRE(code);
+    REQUIRE(!error);
     REQUIRE(encoded == expected_result);
 
     encoded.erase();
     encoded.resize(encoded_size);
-    code = encode_url(make_const_adapter(data_literals, strlen(data_literals)), encoded);
-    REQUIRE(code);
+    error = encode_url(make_const_adapter(data_literals, strlen(data_literals)), encoded);
+    REQUIRE(!error);
     REQUIRE(encoded == expected_result);
 }
 
@@ -483,15 +485,15 @@ TEST_CASE("url_decode_from_null_terminated_strings")
 
     std::string decoded;
     decoded.resize(decoded_size);
-    error_code_t code = decode_url(
+    error_code_t error = decode_url(
         make_const_adapter(encoded_char_array, strlen(encoded_char_array)), decoded);
-    REQUIRE(code);
+    REQUIRE(!error);
     REQUIRE(decoded == expected_result);
 
     decoded.erase();
     decoded.resize(decoded_size);
-    code = decode_url(make_const_adapter(encoded_literals, strlen(encoded_literals)), decoded);
-    REQUIRE(code);
+    error = decode_url(make_const_adapter(encoded_literals, strlen(encoded_literals)), decoded);
+    REQUIRE(!error);
     REQUIRE(decoded == expected_result);
 }
 
@@ -519,8 +521,8 @@ TEST_CASE("url_encode_binary_data")
 
     std::string encoded;
     encoded.resize(encoded_size);
-    const error_code_t code = encode_url(binary, encoded);
-    REQUIRE(code);
+    const error_code_t error = encode_url(binary, encoded);
+    REQUIRE(!error);
     REQUIRE(encoded == expected_result);
 }
 
@@ -546,8 +548,8 @@ TEST_CASE("url_decode_binary_data")
 
     std::vector<uint8_t> decoded;
     decoded.resize(decoded_size);
-    const error_code_t code = decode_url(encoded, decoded);
-    REQUIRE(code);
+    const error_code_t error = decode_url(encoded, decoded);
+    REQUIRE(!error);
     REQUIRE(decoded == expected_result);
 }
 
@@ -578,8 +580,8 @@ TEST_CASE("url_encode_utf8")
 
     std::string encoded;
     encoded.resize(encoded_size);
-    error_code_t code = encode_url(russian, encoded);
-    REQUIRE(code);
+    error_code_t error = encode_url(russian, encoded);
+    REQUIRE(!error);
     REQUIRE(encoded == russian_base64);
 
     encoded_size = calc_encoded_size_url(japanese_size);
@@ -587,8 +589,8 @@ TEST_CASE("url_encode_utf8")
 
     encoded.clear();
     encoded.resize(encoded_size);
-    code = encode_url(japanese, encoded);
-    REQUIRE(code);
+    error = encode_url(japanese, encoded);
+    REQUIRE(!error);
     REQUIRE(encoded == japanese_base64);
 }
 
@@ -617,8 +619,8 @@ TEST_CASE("url_decode_utf8")
 
     std::basic_string<char8_t> decoded;
     decoded.resize(decoded_size);
-    error_code_t code = decode_url(russian_base64, decoded);
-    REQUIRE(code);
+    error_code_t error = decode_url(russian_base64, decoded);
+    REQUIRE(!error);
     REQUIRE(decoded == russian);
 
     decoded_size = calc_decoded_size_url(japanese_base64);
@@ -626,7 +628,7 @@ TEST_CASE("url_decode_utf8")
 
     decoded.clear();
     decoded.resize(decoded_size);
-    code = decode_url(japanese_base64, decoded);
-    REQUIRE(code);
+    error = decode_url(japanese_base64, decoded);
+    REQUIRE(!error);
     REQUIRE(decoded == japanese);
 }

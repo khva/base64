@@ -79,10 +79,10 @@ namespace base64
             return detail::invalid_buffer_size_error<encoding_traits>(base64_buffer_size);
         }
 
-        error_code_t res_code;
+        error_code_t err_code;
         const uint8_t * base64_ptr = base64_data.data();
 
-        auto index_of = [base64_ptr, & res_code](size_t pos) -> uint32_t
+        auto index_of = [base64_ptr, & err_code](size_t pos) -> uint32_t
         {
             const uint8_t symbol = base64_ptr[pos];
 
@@ -96,8 +96,8 @@ namespace base64
 
             if (index == encoding_traits::invalid_index())
             {
-                if (res_code)
-                    res_code = detail::non_alphabetic_symbol_error(pos, symbol);
+                if (!err_code)
+                    err_code = detail::non_alphabetic_symbol_error(pos, symbol);
 
                 return 0;
             }
@@ -114,7 +114,7 @@ namespace base64
         uint8_t * raw_ptr = raw_data.data();
 
         size_t raw_pos = 0;
-        for (size_t i = 0; i < encoded_size && res_code;)
+        for (size_t i = 0; i < encoded_size && !err_code;)
         {
             const uint32_t sextet_a = index_of(i++);
             const uint32_t sextet_b = index_of(i++);
@@ -138,7 +138,7 @@ namespace base64
             const size_t tail_size = base64_buffer_size - encoded_size;
             assert(tail_size == 0 || tail_size == 2 || tail_size == 3);
 
-            if (tail_size > 0 && res_code)
+            if (tail_size > 0 && !err_code)
             {
                 size_t tail_pos = encoded_size;
 
@@ -156,7 +156,7 @@ namespace base64
             }
         }
 
-        return res_code;
+        return err_code;
     }
 
 }   // namespace base64

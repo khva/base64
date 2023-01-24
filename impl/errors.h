@@ -35,8 +35,8 @@ namespace base64
         error_type_t type() const noexcept          {   return m_code;  }
         const std::string & msg() const noexcept    {   return m_msg;   }
 
-        bool no_error() const noexcept              {   return m_code == error_type_t::no_error;    }
-        explicit operator bool() const noexcept     {   return no_error();                          }
+        bool has_error() const noexcept             {   return m_code != error_type_t::no_error;    }
+        explicit operator bool() const noexcept     {   return has_error();                         }
 
     private:
         std::string     m_msg;
