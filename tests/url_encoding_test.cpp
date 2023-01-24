@@ -1,4 +1,5 @@
 #include <cstring>
+#include <memory>
 #include <ostream>
 #include <string>
 #include <string_view>
@@ -260,24 +261,19 @@ TEST_CASE("url_encode_to_different_storages")
 
     std::string encoded_string;
     encoded_string.resize(encoded_size);
-    const error_code_t code_1 = encode_url(data, encoded_string);
-    REQUIRE(code_1);
+    error_code_t code = encode_url(data, encoded_string);
+    REQUIRE(code);
     REQUIRE(encoded_string == expected_result);
 
-    char encoded_char_array[expected_size];
-    const error_code_t code_2 = encode_url(data, encoded_char_array);
-    REQUIRE(code_2);
-    REQUIRE(strncmp(encoded_char_array, expected_result.data(), expected_size) == 0);
-
     std::array<uint8_t, expected_size> encoded_array;
-    const error_code_t code_3 = encode_url(data, encoded_array);
-    REQUIRE(code_3);
+    code = encode_url(data, encoded_array);
+    REQUIRE(code);
     REQUIRE(memcmp(encoded_array.data(), expected_result.data(), expected_size) == 0);
 
     std::vector<uint8_t> encoded_vector;
     encoded_vector.resize(encoded_size);
-    const error_code_t code_4 = encode_url(data, encoded_vector);
-    REQUIRE(code_4);
+    code = encode_url(data, encoded_vector);
+    REQUIRE(code);
     REQUIRE(memcmp(encoded_vector.data(), expected_result.data(), expected_size) == 0);
 }
 
@@ -295,24 +291,19 @@ TEST_CASE("url_decode_to_different_storages")
 
     std::string decoded_string;
     decoded_string.resize(decoded_size);
-    const error_code_t code_1 = decode_url(encoded, decoded_string);
-    REQUIRE(code_1);
+    error_code_t code = decode_url(encoded, decoded_string);
+    REQUIRE(code);
     REQUIRE(decoded_string == expected_result);
 
-    char decoded_char_array[expected_size];
-    const error_code_t code_2 = decode_url(encoded, decoded_char_array);
-    REQUIRE(code_2);
-    REQUIRE(strncmp(decoded_char_array, expected_result.data(), expected_size) == 0);
-
     std::array<uint8_t, expected_size> encoded_array;
-    const error_code_t code_3 = decode_url(encoded, encoded_array);
-    REQUIRE(code_3);
+    code = decode_url(encoded, encoded_array);
+    REQUIRE(code);
     REQUIRE(memcmp(encoded_array.data(), expected_result.data(), expected_size) == 0);
 
     std::vector<uint8_t> decoded_vector;
     decoded_vector.resize(decoded_size);
-    const error_code_t code_4 = decode_url(encoded, decoded_vector);
-    REQUIRE(code_4);
+    code = decode_url(encoded, decoded_vector);
+    REQUIRE(code);
     REQUIRE(memcmp(decoded_vector.data(), expected_result.data(), expected_size) == 0);
 }
 
@@ -322,12 +313,10 @@ TEST_CASE("url_encode_from_different_storages")
     using namespace base64;
 
     constexpr size_t data_size = 12;
-    constexpr char data_char_array[data_size] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '1', '0' };
     constexpr std::array<int8_t, data_size> data_array = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '1', '0' };
     const std::string data_string = "012345678910";
     constexpr std::string_view data_string_view = "012345678910";
     const std::vector<uint8_t> data_vector = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '1', '0' };
-    constexpr const char* data_literals = "012345678910"; // GCC wants const
     constexpr size_t expected_size = 16;
     constexpr std::string_view expected_result = "MDEyMzQ1Njc4OTEw";
 
@@ -336,13 +325,7 @@ TEST_CASE("url_encode_from_different_storages")
 
     std::string encoded;
     encoded.resize(encoded_size);
-    error_code_t code = encode_url(data_char_array, encoded);
-    REQUIRE(code);
-    REQUIRE(encoded == expected_result);
-
-    encoded.erase();
-    encoded.resize(encoded_size);
-    code = encode(data_array, encoded);
+    error_code_t code = encode(data_array, encoded);
     REQUIRE(code);
     REQUIRE(encoded == expected_result);
 
@@ -363,12 +346,6 @@ TEST_CASE("url_encode_from_different_storages")
     code = encode_url(data_vector, encoded);
     REQUIRE(code);
     REQUIRE(encoded == expected_result);
-
-    encoded.erase();
-    encoded.resize(encoded_size);
-    code = encode_url(make_const_adapter(data_literals, strlen(data_literals)), encoded);
-    REQUIRE(code);
-    REQUIRE(encoded == expected_result);
 }
 
 
@@ -377,12 +354,10 @@ TEST_CASE("url_decode_from_different_storages")
     using namespace base64;
 
     constexpr size_t encoded_size = 16;
-    constexpr char encoded_char_array[] = { 'M', 'D', 'E', 'y', 'M', 'z', 'Q', '1', 'N', 'j', 'c', '4', 'O', 'T', 'E', 'w' };
     constexpr std::array<char, encoded_size> encoded_array = { 'M', 'D', 'E', 'y', 'M', 'z', 'Q', '1', 'N', 'j', 'c', '4', 'O', 'T', 'E', 'w' };
     const std::string encoded_string = "MDEyMzQ1Njc4OTEw";
     constexpr std::string_view encoded_string_view = "MDEyMzQ1Njc4OTEw";
     const std::vector<uint8_t> encoded_vector = { 'M', 'D', 'E', 'y', 'M', 'z', 'Q', '1', 'N', 'j', 'c', '4', 'O', 'T', 'E', 'w' };
-    constexpr const char* encoded_literals = "MDEyMzQ1Njc4OTEw";  // GCC wants const
     constexpr size_t expected_size = 12;
     constexpr std::string_view expected_result = "012345678910";
 
@@ -391,13 +366,7 @@ TEST_CASE("url_decode_from_different_storages")
 
     std::string decoded;
     decoded.resize(decoded_size);
-    error_code_t code = decode_url(encoded_char_array, decoded);
-    REQUIRE(code);
-    REQUIRE(decoded == expected_result);
-
-    decoded.erase();
-    decoded.resize(decoded_size);
-    code = decode(encoded_array, decoded);
+    error_code_t code = decode(encoded_array, decoded);
     REQUIRE(code);
     REQUIRE(decoded == expected_result);
 
@@ -416,6 +385,106 @@ TEST_CASE("url_decode_from_different_storages")
     decoded.erase();
     decoded.resize(decoded_size);
     code = decode_url(encoded_vector, decoded);
+    REQUIRE(code);
+    REQUIRE(decoded == expected_result);
+}
+
+
+TEST_CASE("url_encode_to_c_array")
+{
+    using namespace base64;
+
+    constexpr std::string_view data = "012345678910";
+    constexpr size_t expected_size = 16;
+    constexpr std::string_view expected_result = "MDEyMzQ1Njc4OTEw";
+
+    const size_t encoded_size = calc_encoded_size_url(data.size());
+    REQUIRE(encoded_size == expected_size);
+
+    char encoded_char_array[expected_size];
+    mutable_adapter_t eca_adapter = make_mutable_adapter(encoded_char_array, expected_size);
+    error_code_t code = encode_url(data, eca_adapter);
+    REQUIRE(code);
+    REQUIRE(strncmp(encoded_char_array, expected_result.data(), expected_size) == 0);
+
+    std::unique_ptr<char[]> encoded_unique_ptr{ new char[expected_size] };
+    mutable_adapter_t eup_adapter = make_mutable_adapter(encoded_unique_ptr.get(), expected_size);
+    code = encode(data, eup_adapter);
+    REQUIRE(code);
+    REQUIRE(strncmp(encoded_unique_ptr.get(), expected_result.data(), expected_size) == 0);
+}
+
+
+TEST_CASE("url_decode_to_c_array")
+{
+    using namespace base64;
+
+    constexpr std::string_view encoded = "MDEyMzQ1Njc4OTEw";
+    constexpr size_t expected_size = 12;
+    constexpr std::string_view expected_result = "012345678910";
+
+    const size_t decoded_size = calc_decoded_size_url(encoded);
+    REQUIRE(decoded_size == expected_size);
+
+    char decoded_char_array[expected_size];
+    mutable_adapter_t dca_adapter = make_mutable_adapter(decoded_char_array, expected_size);
+    error_code_t code = decode_url(encoded, dca_adapter);
+    REQUIRE(code);
+    REQUIRE(strncmp(decoded_char_array, expected_result.data(), expected_size) == 0);
+
+    std::unique_ptr<char[]> decoded_unique_ptr{ new char[expected_size] };
+    mutable_adapter_t dup_adapter = make_mutable_adapter(decoded_unique_ptr.get(), expected_size);
+    code = decode(encoded, dup_adapter);
+    REQUIRE(code);
+    REQUIRE(strncmp(decoded_unique_ptr.get(), expected_result.data(), expected_size) == 0);
+}
+
+
+TEST_CASE("url_encode_from_null_terminated_strings")
+{
+    using namespace base64;
+
+    constexpr char data_char_array[] = "012345678910";
+    constexpr const char * data_literals = "012345678910"; // GCC wants const
+    constexpr size_t expected_size = 16;
+    constexpr std::string_view expected_result = "MDEyMzQ1Njc4OTEw";
+
+    const size_t encoded_size = calc_encoded_size_url(strlen(data_char_array));
+    REQUIRE(encoded_size == expected_size);
+
+    std::string encoded;
+    encoded.resize(encoded_size);
+    error_code_t code = encode_url(
+        make_const_adapter(data_char_array, strlen(data_char_array)), encoded);
+    REQUIRE(code);
+    REQUIRE(encoded == expected_result);
+
+    encoded.erase();
+    encoded.resize(encoded_size);
+    code = encode_url(make_const_adapter(data_literals, strlen(data_literals)), encoded);
+    REQUIRE(code);
+    REQUIRE(encoded == expected_result);
+}
+
+
+TEST_CASE("url_decode_from_null_terminated_strings")
+{
+    using namespace base64;
+
+    constexpr char encoded_char_array[] = "MDEyMzQ1Njc4OTEw";
+    constexpr const char* encoded_literals = "MDEyMzQ1Njc4OTEw";  // GCC wants const
+
+    constexpr size_t expected_size = 12;
+    constexpr std::string_view expected_result = "012345678910";
+
+    const size_t decoded_size = calc_decoded_size_url(
+        make_const_adapter(encoded_char_array, strlen(encoded_char_array)));
+    REQUIRE(decoded_size == expected_size);
+
+    std::string decoded;
+    decoded.resize(decoded_size);
+    error_code_t code = decode_url(
+        make_const_adapter(encoded_char_array, strlen(encoded_char_array)), decoded);
     REQUIRE(code);
     REQUIRE(decoded == expected_result);
 

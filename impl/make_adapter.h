@@ -22,13 +22,6 @@ namespace base64
     mutable_adapter_t make_mutable_adapter(const mutable_adapter_t & adapter) noexcept;
     const_adapter_t make_const_adapter(const const_adapter_t & adapter) noexcept;
 
-    // C array adapter makers
-    template <typename pod_type, size_t array_size>
-    mutable_adapter_t make_mutable_adapter(pod_type (& data)[array_size]) noexcept;
-
-    template <typename pod_type, size_t array_size>
-    const_adapter_t make_const_adapter(const pod_type (& data)[array_size]) noexcept;
-
     // std::array<> adapter makers
     template <typename pod_type, size_t array_size>
     mutable_adapter_t make_mutable_adapter(std::array<pod_type, array_size> & data) noexcept;
@@ -86,22 +79,6 @@ namespace base64
     inline const_adapter_t make_const_adapter(const const_adapter_t & adapter) noexcept
     {
         return adapter;
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    template <typename pod_type, size_t array_size>
-    inline mutable_adapter_t make_mutable_adapter(pod_type (& data)[array_size]) noexcept
-    {
-        return mutable_adapter_t(
-            reinterpret_cast<uint8_t *>(data), array_size * sizeof(pod_type));
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    template <typename pod_type, size_t array_size>
-    inline const_adapter_t make_const_adapter(const pod_type (& data)[array_size]) noexcept
-    {
-        return const_adapter_t(
-            reinterpret_cast<const uint8_t *>(data), array_size * sizeof(pod_type));
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
