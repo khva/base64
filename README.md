@@ -15,14 +15,15 @@
   - [Base64 decoding](#base64-decoding)
   - [Error handling](#error-handling)
 - [How to add library to your project](#how-to-add-library-to-your-project)
-- [Used third-party tools](#used-third-party-tools)
+- [Additional information](#additional-information)
 
 
 ## Description
-The base64 library implements Base64 encoding and decoding functions.
+The `base64` library implements Base64 encoding and decoding functions.
 
 Its main features:
  - header-only and easy to use
+ - written in C++20
  - supports different types of STL containers: `std::string`, `std::vector`, `std::string_view`, `std::array`
  - easily adaptable to use custom containers/buffers
  - supports [Base64](https://www.rfc-editor.org/rfc/rfc2045#section-6.8) and ["URL and Filename Safe" Base64](https://www.rfc-editor.org/rfc/rfc3548#section-4) alphabets
@@ -242,4 +243,19 @@ An error has occurred. The buffer has the non-alphabetical character 0x28 at ind
 
 
 ## How to add library to your project
-TODO: fill it
+The `base64` library can be added as a submodule:
+ - `git submodule add https://github.com/khva/base64`
+ - `git add .`
+ - `git commit -m "add base64 library"`
+ - `git push origin master`
+
+Another way is to download and copy the library code directly into your project:
+ - copy the `base64.h` file to the folder intended for third-party libraries, for example, to `third_party/base64/base64.h`
+ - copy the `impl` folder to the same path, for example, to `third_party/base64/impl`
+ - add to project settings path to `base64.h`, for example, for CMake project: `include_directories(third_party/base64)`
+
+
+## Additional information
+- the library was tested on compilers GCC 11.3, Apple Clang 13, MS Visual Studio 2019/2022
+- the minimum version of CMake is 3.15
+- the [doctest](https://github.com/doctest/doctest) framework version 2.4.9 is used for testing (as part of the project in the `tests\doctest` directory)
