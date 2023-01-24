@@ -191,6 +191,55 @@ decoded video attributes: {"is_full_screen":false,"window_size":{"width":400,"he
 
 
 ### Error handling
-The encoding and decoding functions return an error code of type `error_code_t`. The `error_code_t` has such methods:
+The encoding and decoding functions return an error code of type `error_code_t`. The `error_code_t` class contains an error code and an error message. The success of the encoding/decoding operation can be determined using the methods:
 ```c++
+bool no_error() const noexcept;
+explicit operator bool() const noexcept;
 ```
+Both methods return `true` if the operation was successful. If unsuccessful, you can find out the type of error using the method:
+```c++
+error_type_t type() const noexcept;
+```
+The method returns the following types of errors:
+ - `error_type_t::no_error` — no error
+ - `error_type_t::insufficient_buffer_size` — insufficient size of output buffer
+ - `error_type_t::invalid_buffer_size` — invalid size of input buffer, the buffer is truncated or corrupted
+ - `error_type_t::non_alphabetic_symbol` — the input buffer contains a non-alphabetic symbol
+
+The error message can be obtained using the method:
+```c++
+const std::string & msg() const noexcept
+```
+The `msg` method returns an empty string if there is no error.
+
+#### Example 3: Non-alphabetical character
+```c++
+#include "base64.h"
+#include <iostream>
+
+void non_alphabetical_character()
+{
+    using namespace base64;
+
+    // the non-alphabetical character '(' at index 3
+    constexpr std::string_view wrong_data = "MDE(MzQ1Njc4OUFC";
+
+    std::string decoded(calc_decoded_size(wrong_data), '\0');
+    const error_code_t code = decode(wrong_data, decoded);
+
+    if (!code)
+    {
+        std::cout << "An error has occurred. " << code.msg() << std::endl;
+        return;
+    }
+    std::cout << "decoded data: " << decoded << std::endl;
+}
+```
+Expected output:
+```
+An error has occurred. The buffer has the non-alphabetical character 0x28 at index 3.
+```
+
+
+## How to add library to your project
+TODO: fill it
