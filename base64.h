@@ -70,7 +70,9 @@ namespace base64
         const raw_array         & raw_data,
         base64_array            & base64_data )
     {
-        return encode_impl<def_encoding_t>(make_const_buffer(raw_data), make_mutable_buffer(base64_data));
+        return encode_impl<def_encoding_t>(
+            make_const_adapter(raw_data),
+            make_mutable_adapter(base64_data));
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -79,7 +81,9 @@ namespace base64
         const raw_array         & raw_data,
         base64_array            & base64_data )
     {
-        return encode_impl<url_encoding_t>(make_const_buffer(raw_data), make_mutable_buffer(base64_data));
+        return encode_impl<url_encoding_t>(
+            make_const_adapter(raw_data),
+            make_mutable_adapter(base64_data));
     }
 
 
@@ -92,14 +96,14 @@ namespace base64
     template <typename base64_array>
     inline size_t calc_decoded_size(const base64_array & base64_data) noexcept
     {
-        return calc_decoded_size_impl<def_encoding_t>(make_const_buffer(base64_data));
+        return calc_decoded_size_impl<def_encoding_t>(make_const_adapter(base64_data));
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     template <typename base64_array>
     inline size_t calc_decoded_size_url(const base64_array & base64_data) noexcept
     {
-        return calc_decoded_size_impl<url_encoding_t>(make_const_buffer(base64_data));
+        return calc_decoded_size_impl<url_encoding_t>(make_const_adapter(base64_data));
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -108,7 +112,9 @@ namespace base64
         const base64_array      & base64_data,
         raw_array               & raw_data)
     {
-        return decode_impl<def_encoding_t>(make_const_buffer(base64_data), make_mutable_buffer(raw_data));
+        return decode_impl<def_encoding_t>(
+            make_const_adapter(base64_data),
+            make_mutable_adapter(raw_data));
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -117,7 +123,9 @@ namespace base64
         const base64_array      & base64_data,
         raw_array               & raw_data)
     {
-        return decode_impl<url_encoding_t>(make_const_buffer(base64_data), make_mutable_buffer(raw_data));
+        return decode_impl<url_encoding_t>(
+            make_const_adapter(base64_data),
+            make_mutable_adapter(raw_data));
     }
 
 }   // namespace base64

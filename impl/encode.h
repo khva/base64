@@ -1,10 +1,10 @@
 #pragma once
 
 
-#include "buffers.h"
+#include "adapters.h"
 #include "encoding_traits.h"
 #include "errors.h"
-#include "make_buffer.h"
+#include "make_adapter.h"
 
 #include <cassert>
 
@@ -21,8 +21,8 @@ namespace base64
 
     template <typename encoding_traits>
     error_code_t encode_impl(
-        const const_buffer_t    & raw_data,
-        const mutable_buffer_t  & base64_data);
+        const const_adapter_t       & raw_data,
+        const mutable_adapter_t     & base64_data);
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -48,8 +48,8 @@ namespace base64
     ////////////////////////////////////////////////////////////////////////////////////////////////
     template <typename encoding_traits>
     error_code_t encode_impl(
-        const const_buffer_t    & raw_data,
-        const mutable_buffer_t  & base64_data)
+        const const_adapter_t       & raw_data,
+        const mutable_adapter_t     & base64_data)
     {
         const size_t raw_size = raw_data.size();
         const size_t encoded_size = calc_encoded_size_impl<encoding_traits>(raw_size);

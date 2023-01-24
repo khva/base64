@@ -1,8 +1,8 @@
 #pragma once
 
-#include "buffers.h"
+#include "adapters.h"
 #include "encoding_traits.h"
-#include "make_buffer.h"
+#include "make_adapter.h"
 
 #include <cassert>
 
@@ -15,12 +15,12 @@ namespace base64
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     template <typename encoding_traits>
-    size_t calc_decoded_size_impl(const const_buffer_t & base64_data) noexcept;
+    size_t calc_decoded_size_impl(const const_adapter_t & base64_data) noexcept;
 
     template <typename encoding_traits>
     error_code_t decode_impl(
-        const const_buffer_t      & base64_data,
-        const mutable_buffer_t    & raw_data);
+        const const_adapter_t       & base64_data,
+        const mutable_adapter_t     & raw_data);
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -29,7 +29,7 @@ namespace base64
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     template <typename encoding_traits>
-    size_t calc_decoded_size_impl(const const_buffer_t & base64_data) noexcept
+    size_t calc_decoded_size_impl(const const_adapter_t & base64_data) noexcept
     {
         const size_t encoded_size = base64_data.size();
         size_t raw_size = 3 * (encoded_size / 4);
@@ -62,8 +62,8 @@ namespace base64
     ////////////////////////////////////////////////////////////////////////////////////////////////
     template <typename encoding_traits>
     error_code_t decode_impl(
-        const const_buffer_t      & base64_data,
-        const mutable_buffer_t    & raw_data)
+        const const_adapter_t       & base64_data,
+        const mutable_adapter_t     & raw_data)
     {
         const size_t raw_size = calc_decoded_size_impl<encoding_traits>(base64_data);
         const size_t raw_buffer_size = raw_data.size();

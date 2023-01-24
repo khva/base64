@@ -366,7 +366,7 @@ TEST_CASE("url_encode_from_different_storages")
 
     encoded.erase();
     encoded.resize(encoded_size);
-    code = encode_url(make_const_buffer(data_literals, strlen(data_literals)), encoded);
+    code = encode_url(make_const_adapter(data_literals, strlen(data_literals)), encoded);
     REQUIRE(code);
     REQUIRE(encoded == expected_result);
 }
@@ -421,7 +421,7 @@ TEST_CASE("url_decode_from_different_storages")
 
     decoded.erase();
     decoded.resize(decoded_size);
-    code = decode_url(make_const_buffer(encoded_literals, strlen(encoded_literals)), decoded);
+    code = decode_url(make_const_adapter(encoded_literals, strlen(encoded_literals)), decoded);
     REQUIRE(code);
     REQUIRE(decoded == expected_result);
 }

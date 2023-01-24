@@ -8,9 +8,28 @@
 #include "base64.h"
 #include "helpers.h"
 
+void non_alphabetical_character()
+{
+    using namespace base64;
+
+    // the non-alphabetical character '(' at index 3
+    constexpr std::string_view wrong_data = "MDE(MzQ1Njc4OUFC";
+
+    std::string decoded(calc_decoded_size(wrong_data), '\0');
+    const error_code_t code = decode(wrong_data, decoded);
+
+    if (!code)
+    {
+        std::cout << "An error has occurred. " << code.msg() << std::endl;
+        return;
+    }
+    std::cout << "decoded data: " << decoded << std::endl;
+}
+
 
 TEST_CASE("encode_errors")
 {
+    non_alphabetical_character();
     using namespace base64;
 
     const std::string_view data = "0123456789AB";
@@ -372,7 +391,7 @@ TEST_CASE("encode_from_different_storages")
 
     encoded.erase();
     encoded.resize(encoded_size);
-    code = encode(make_const_buffer(data_literals, strlen(data_literals)), encoded);
+    code = encode(make_const_adapter(data_literals, strlen(data_literals)), encoded);
     REQUIRE(code);
     REQUIRE(encoded == expected_result);
 }
@@ -427,7 +446,7 @@ TEST_CASE("decode_from_different_storages")
 
     decoded.erase();
     decoded.resize(decoded_size);
-    code = decode(make_const_buffer(encoded_literals, strlen(encoded_literals)), decoded);
+    code = decode(make_const_adapter(encoded_literals, strlen(encoded_literals)), decoded);
     REQUIRE(code);
     REQUIRE(decoded == expected_result);
 }
