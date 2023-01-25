@@ -291,6 +291,8 @@ void create_adapters_directly()
 
     // you can use the encoded_adapter as a const_adapter_t
     const size_t decoded_size = calc_decoded_size(encoded_adapter);
+    assert(decoded_size == text_size);
+
     std::unique_ptr<char[]> decoded{ new char[decoded_size + 1] };
     decoded[decoded_size] = '\0';
 

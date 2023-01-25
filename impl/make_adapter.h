@@ -18,9 +18,17 @@ namespace base64
     mutable_adapter_t make_mutable_adapter(void * data, size_t byte_count) noexcept;
     const_adapter_t make_const_adapter(const void * data, size_t byte_count) noexcept;
 
+    // stub for custom adapter makers
+    template <typename custom_buffer_type>
+    mutable_adapter_t make_mutable_adapter(custom_buffer_type &);
+
+    template <typename custom_buffer_type>
+    const_adapter_t make_const_adapter(const custom_buffer_type &);
+
     // dummy functions for calls like: encode(const_adapter_t, std::string)
-    mutable_adapter_t make_mutable_adapter(const mutable_adapter_t & adapter) noexcept;
+    mutable_adapter_t make_mutable_adapter(mutable_adapter_t & adapter) noexcept;
     const_adapter_t make_const_adapter(const const_adapter_t & adapter) noexcept;
+    const_adapter_t make_const_adapter(const mutable_adapter_t & adapter) noexcept;
 
     // std::array<> adapter makers
     template <typename pod_type, size_t array_size>
@@ -70,7 +78,7 @@ namespace base64
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    inline mutable_adapter_t make_mutable_adapter(const mutable_adapter_t & adapter) noexcept
+    inline mutable_adapter_t make_mutable_adapter(mutable_adapter_t & adapter) noexcept
     {
         return adapter;
     }
@@ -79,6 +87,12 @@ namespace base64
     inline const_adapter_t make_const_adapter(const const_adapter_t & adapter) noexcept
     {
         return adapter;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    inline const_adapter_t make_const_adapter(const mutable_adapter_t & adapter) noexcept
+    {
+        return const_adapter_t(adapter.data(), adapter.size());
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////

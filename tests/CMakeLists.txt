@@ -9,7 +9,8 @@ enable_testing()
 set(TEST_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/def_encoding_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/url_encoding_test.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/traits_test.cpp)
+    ${CMAKE_CURRENT_SOURCE_DIR}/traits_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/custom_buffer_test.cpp)
 
 add_executable(${PROJECT_NAME} ${TEST_SOURCES})
 add_test(NAME ${PROJECT_NAME} COMMAND ./base64_test)
