@@ -14,7 +14,7 @@
   - [Base64 encoding](#base64-encoding)
   - [Base64 decoding](#base64-decoding)
   - [Error handling](#error-handling)
-  - [Use custom buffers](#use-custom-buffers)
+  - [How to use custom buffers](#how-to-use-custom-buffers)
 - [How to add base64 library to your project](#how-to-add-base64-library-to-your-project)
 - [Additional information](#additional-information)
 
@@ -242,12 +242,12 @@ Expected output:
 An error has occurred. The buffer has the non-alphabetical character 0x28 at index 3.
 ```
 
-### Use custom buffers
-The `base64` library provides the ability to use containers that are not among the supported ones as buffers. Low-level library functions work with containers via adapters. There are two ways to use unsupported containers:
- 1. Create adapters directly and use them in encoding/decoding functions.
- 2. Define adapter makers for custom container.
+### How to use custom buffers
+The `base64` library provides the ability to use containers that are not among the supported ones (`std::string`, `std::vector`, `std::string_view`, `std::array`) as buffers. Low-level library functions work with containers via adapters. There are two ways to use unsupported containers:
+ 1. [Create adapters directly and use them in encoding/decoding functions](create-adapters-directly-and-use-them-in-encoding/decoding-functions).
+ 2. [Define adapter makers for custom container](#define-adapter-makers-for-custom-container).
 
-The `base64` library has two types of adapters: `const_adapter_t` and `mutable_adapter_t`. Both are defined in the `base64/impl/adapters.h` header. The `const_adapter_t` class is used for containers containing input (immutable) data. The `mutable_adapter_t` class is used for containers containing output (mutable) data.
+The `base64` library has two types of adapters: `const_adapter_t` and `mutable_adapter_t`. Both are defined in the `base64/impl/adapters.h` header. The `const_adapter_t` class is used for containers for input (immutable) data. The `mutable_adapter_t` class is used for containers for output (mutable) data.
 
 #### Create adapters directly and use them in encoding/decoding functions
 Adapters can be created using the helper functions defined in the `base64/impl/make_adapter.h` header:
@@ -285,7 +285,7 @@ void create_adapters_directly()
     // create an adapter for the buffer that will contain encoded data
     mutable_adapter_t encoded_adapter = make_mutable_adapter(encoded.get(), encoded_size);
 
-    // use text_adapter and encoded_adapter adapters to encode data
+    // use text_adapter and encoded_adapter to encode data
     auto err_code = encode(text_adapter, encoded_adapter);
     assert(!err_code);
 
@@ -299,7 +299,7 @@ void create_adapters_directly()
     // make a mutable adapter for the buffer that will contain decoded data
     auto decoded_adapter = make_mutable_adapter(decoded.get(), decoded_size);
 
-    // use encoded_adapter and decoded_adapter adapters to decode data
+    // use encoded_adapter and decoded_adapter to decode data
     err_code = decode(encoded_adapter, decoded_adapter);
     assert(!err_code);
 
@@ -324,13 +324,13 @@ const_adapter_t make_const_adapter(const custom_buffer_type &);
 template <typename custom_buffer_type>
 mutable_adapter_t make_mutable_adapter(custom_buffer_type &);
 ```
-There is only a declaration without an implementation. You will get a link error if you try to use a custom buffer in encoding/decoding functions.
+There is only a declaration without an implementation. You will get a linker error if you try to use a custom buffer in encoding/decoding functions.
 ```c++
 TCharBuffer encoded{ encoded_size };
 auto err_code = encode(text, encoded);
 
 ```
-This code reproduces the link error:
+This code produces the linker error:
 ```
 in function `base64::error_code_t base64::encode<std::basic_string_view<char, std::char_traits<char> >, TCharBuffer>(std::basic_string_view<char, std::char_traits<char> > const&, TCharBuffer&)':
 /base64/base64.h:75: undefined reference to `base64::mutable_adapter_t base64::make_mutable_adapter<TCharBuffer>(TCharBuffer&)'
@@ -339,14 +339,14 @@ It is necessary to define a template specialization of adapter makers for the `T
 ```c++
 namespace base64
 {
-    // the const_adapter_t maker is required for containers containing input (immutable) data
+    // the const_adapter_t maker is required for containers for input (immutable) data
     template <>
     inline const_adapter_t make_const_adapter<TCharBuffer>(const TCharBuffer& buffer)
     {
         return const_adapter_t(reinterpret_cast<const uint8_t*>(buffer.Ptr()), buffer.Size());
     }
 
-    // mutable_adapter_t required for containers containing output (mutable) data
+    // mutable_adapter_t required for containers for output (mutable) data
     template <>
     inline mutable_adapter_t make_mutable_adapter<TCharBuffer>(TCharBuffer& buffer)
     {
@@ -354,6 +354,7 @@ namespace base64
     }
 }   // namespace base64
 ```
+And here you can see a full example.
 
 #### Example: define adapter makers
 ```c++
@@ -366,7 +367,8 @@ namespace base64
 class TCharBuffer final
 {
 public:
-    explicit TCharBuffer(size_t size = 0) : mData(size > 0 ? new char[size] : nullptr), mSize(size) {}
+    explicit TCharBuffer(size_t size = 0)
+      : mData(size > 0 ? new char[size] : nullptr), mSize(size) {}
     ~TCharBuffer() noexcept = default;
 
     char* Ptr() noexcept { return mData.get(); }
@@ -420,11 +422,12 @@ void define_adapter_makers()
     assert(text == decoded_text);
 }
 ```
-As you can see, it is much more convenient to work this way. Expected output:
+ Expected output:
 ```
 encoded data: RGVmaW5lIGFkYXB0ZXIgbWFrZXJzIGZvciBjdXN0b20gY29udGFpbmVyLg==
 decoded data: Define adapter makers for custom container.
 ```
+As you can see, it is much more convenient to define adapter makers for custom container then to сreate adapters directly and use them in encoding/decoding functions.
 
 
 ## How to add base64 library to your project
