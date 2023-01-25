@@ -193,12 +193,12 @@ decoded video attributes: {"is_full_screen":false,"window_size":{"width":400,"he
 
 
 ### Error handling
-The encoding and decoding functions return an error code of type `error_code_t`. The `error_code_t` class contains an error code and an error message. The success of the encoding/decoding operation can be determined using the methods:
+The encoding and decoding functions return a value of type `error_code_t`. The `error_code_t` class contains an error code and an error message. The success of the encoding/decoding operation can be determined using the methods:
 ```c++
 bool has_error() const noexcept;
 explicit operator bool() const noexcept;
 ```
-Both methods return `true` if operation failed. You can find out the type of error using the method:
+Both methods return `true` if operation fails. You can find out the type of error using the method:
 ```c++
 error_type_t type() const noexcept;
 ```
@@ -247,7 +247,9 @@ The `base64` library provides the ability to use containers that are not among t
  1. [Create adapters directly and use them in encoding/decoding functions](create-adapters-directly-and-use-them-in-encoding/decoding-functions).
  2. [Define adapter makers for custom container](#define-adapter-makers-for-custom-container).
 
-The `base64` library has two types of adapters: `const_adapter_t` and `mutable_adapter_t`. Both are defined in the `base64/impl/adapters.h` header. The `const_adapter_t` class is used for containers for input (immutable) data. The `mutable_adapter_t` class is used for containers for output (mutable) data.
+The `base64` library has two types of adapters: `const_adapter_t` and `mutable_adapter_t`. Both are defined in the `base64/impl/adapters.h` header:
+ - `const_adapter_t` is used for containers for input (immutable) data
+ - `mutable_adapter_t` is used for containers for output (mutable) data
 
 #### Create adapters directly and use them in encoding/decoding functions
 Adapters can be created using the helper functions defined in the `base64/impl/make_adapter.h` header:
@@ -437,8 +439,8 @@ git submodule add https://github.com/khva/base64 third_party/base64
 ```
 
 Another way is to download and copy the library code directly into your project:
- - copy the `base64.h` file to the folder intended for third-party libraries, for example, to `third_party/base64/base64.h`
- - copy the `impl` folder to the same path, for example, to `third_party/base64/impl`
+ - copy the `base64.h` file to the directory intended for third-party libraries, for example, to `third_party/base64/base64.h`
+ - copy the `impl` directory to the same path, for example, to `third_party/base64/impl`
  - add `base64.h` path to project settings, for example, for CMake project: `include_directories(third_party/base64)`
 
 
