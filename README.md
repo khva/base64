@@ -244,7 +244,7 @@ An error has occurred. The buffer has the non-alphabetical character 0x28 at ind
 
 ### How to use custom buffers
 The `base64` library provides the ability to use containers that are not among the supported ones (`std::string`, `std::vector`, `std::string_view`, `std::array`) as buffers. Low-level library functions work with containers via adapters. There are two ways to use unsupported containers:
- 1. [Create adapters directly and use them in encoding/decoding functions](create-adapters-directly-and-use-them-in-encoding/decoding-functions).
+ 1. [Create adapters directly and use them in encoding/decoding functions](#create-adapters-directly-and-use-them-in-encoding/decoding-functions).
  2. [Define adapter makers for custom container](#define-adapter-makers-for-custom-container).
 
 The `base64` library has two types of adapters: `const_adapter_t` and `mutable_adapter_t`. Both are defined in the `base64/impl/adapters.h` header:
@@ -439,9 +439,9 @@ git submodule add https://github.com/khva/base64 third_party/base64
 ```
 
 Another way is to download and copy the library code directly into your project:
- - copy the `base64.h` file to the directory intended for third-party libraries, for example, to `third_party/base64/base64.h`
- - copy the `impl` directory to the same path, for example, to `third_party/base64/impl`
- - add `base64.h` path to project settings, for example, for CMake project: `include_directories(third_party/base64)`
+ - copy the `base64.h` file to the directory intended for third-party libraries, e.g. to `third_party/base64/base64.h`
+ - copy the `impl` directory to the same path, e.g. to `third_party/base64/impl`
+ - add `base64.h` path to project settings, e.g. for CMake project: `include_directories(third_party/base64)`
 
 
 ## Additional information
