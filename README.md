@@ -81,7 +81,7 @@ error_code_t encode(const raw_array & raw_data, base64_array & base64_data);
 template <typename raw_array, typename base64_array>
 error_code_t encode_url(const raw_array & raw_data, base64_array & base64_data);
 ```
-Both functions encode incoming data into Base64 and put the result into the output buffer. The difference between these functions lies in the alphabets used. The `encode()` function use [Base64](https://www.rfc-editor.org/rfc/rfc2045#section-6.8) alphabet and the `encode_url()` use ["URL and Filename Safe" Base64](https://www.rfc-editor.org/rfc/rfc3548#section-4) alphabet.
+Both functions encode incoming data into Base64 and put the result into the output buffer. The difference between these functions lies in the alphabets used. The `encode()` function uses [Base64](https://www.rfc-editor.org/rfc/rfc2045#section-6.8) alphabet and the `encode_url()` uses ["URL and Filename Safe" Base64](https://www.rfc-editor.org/rfc/rfc3548#section-4) alphabet.
 
 **Parameters:**
  - `raw_data` — the input buffer containing data to encode, supported buffer types: [std::basic_string](https://en.cppreference.com/w/cpp/string/basic_string), [std::vector](https://en.cppreference.com/w/cpp/container/vector), [std::basic_string_view](https://en.cppreference.com/w/cpp/string/basic_string_view), [std::array](https://en.cppreference.com/w/cpp/container/array)
@@ -139,7 +139,7 @@ error_code_t decode(const base64_array & base64_data, raw_array & raw_data);
 template <typename base64_array, typename raw_array>
 error_code_t decode_url(const base64_array & base64_data, raw_array & raw_data);
 ```
-Both functions decode incoming data from Base64 and put the result into the output buffer. The difference between these functions lies in the alphabets used. The `decode()` function use [Base64](https://www.rfc-editor.org/rfc/rfc2045#section-6.8) alphabet and the `decode_url()` use ["URL and Filename Safe" Base64](https://www.rfc-editor.org/rfc/rfc3548#section-4) alphabet.
+Both functions decode incoming data from Base64 and put the result into the output buffer. The difference between these functions lies in the alphabets used. The `decode()` function uses [Base64](https://www.rfc-editor.org/rfc/rfc2045#section-6.8) alphabet and the `decode_url()` uses ["URL and Filename Safe" Base64](https://www.rfc-editor.org/rfc/rfc3548#section-4) alphabet.
 
 **Parameters:**
  - `base64_data` — the input buffer containing encoded data, supported buffer types: [std::basic_string](https://en.cppreference.com/w/cpp/string/basic_string), [std::vector](https://en.cppreference.com/w/cpp/container/vector), [std::basic_string_view](https://en.cppreference.com/w/cpp/string/basic_string_view), [std::array](https://en.cppreference.com/w/cpp/container/array)
@@ -198,7 +198,7 @@ The encoding and decoding functions return a value of type `error_code_t`. The `
 bool has_error() const noexcept;
 explicit operator bool() const noexcept;
 ```
-Both methods return `true` if operation fails. You can find out the type of error using the method:
+Both methods return `true` if operation fails. You can get the type of error using the method:
 ```c++
 error_type_t type() const noexcept;
 ```
@@ -429,7 +429,7 @@ void define_adapter_makers()
 encoded data: RGVmaW5lIGFkYXB0ZXIgbWFrZXJzIGZvciBjdXN0b20gY29udGFpbmVyLg==
 decoded data: Define adapter makers for custom container.
 ```
-As you can see, it is much more convenient to define adapter makers for custom container then to сreate adapters directly and use them in encoding/decoding functions.
+As you can see, it is much more convenient to define adapter makers for custom container than to сreate adapters directly and use them in encoding/decoding functions.
 
 
 ## How to add base64 library to your project
