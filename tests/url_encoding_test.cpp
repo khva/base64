@@ -503,7 +503,7 @@ TEST_CASE("url_encode_binary_data")
     using namespace base64;
 
     constexpr size_t data_size = 512;
-    const std::vector<uint8_t> binary = make_bin_arrya(data_size);
+    const std::vector<uint8_t> binary = make_bin_array(data_size);
 
     constexpr size_t expected_size = 683;
     constexpr std::string_view expected_result =
@@ -541,7 +541,7 @@ TEST_CASE("url_decode_binary_data")
         "jZ2tvc3d7f4OHi4-Tl5ufo6err7O3u7_Dx8vP09fb3-Pn6-_z9_v8";
 
     constexpr size_t expected_size = 512;
-    const std::vector<uint8_t> expected_result = make_bin_arrya(expected_size);
+    const std::vector<uint8_t> expected_result = make_bin_array(expected_size);
 
     const size_t decoded_size = calc_decoded_size_url(encoded);
     REQUIRE(decoded_size == expected_size);

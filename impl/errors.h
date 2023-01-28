@@ -2,6 +2,7 @@
 
 #include "encoding_traits.h"
 
+#include <cstdio>
 #include <string>
 #include <string_view>
 
@@ -77,7 +78,7 @@ namespace detail
         constexpr std::string_view msg_template =
             "The buffer has insufficient size (required - %zu, obtained - %zu).";
 
-        snprintf(msg.data(), msg_buffer_size, msg_template.data(), required_size, obtained_size);
+        std::snprintf(msg.data(), msg_buffer_size, msg_template.data(), required_size, obtained_size);
 
         return error_code_t(error_type_t::insufficient_buffer_size, msg.c_str());
     }
@@ -96,7 +97,7 @@ namespace detail
                 "The base64 buffer has invalid size of %zu. "
                 "The buffer size must be a multiple of 4.";
 
-            snprintf(msg.data(), msg_buffer_size, msg_template.data(), base64_buffer_size);
+            std::snprintf(msg.data(), msg_buffer_size, msg_template.data(), base64_buffer_size);
         }
         else
         {
@@ -104,7 +105,7 @@ namespace detail
                 "The base64 buffer has invalid size of %zu. "
                 "The buffer size must be a multiple of 4 or have a remainder of division 2 and 3.";
 
-            snprintf(msg.data(), msg_buffer_size, msg_template.data(), base64_buffer_size);
+            std::snprintf(msg.data(), msg_buffer_size, msg_template.data(), base64_buffer_size);
         }
 
         return error_code_t(error_type_t::invalid_buffer_size, msg.c_str());
@@ -120,7 +121,7 @@ namespace detail
         constexpr std::string_view msg_template =
             "The buffer has the non-alphabetical character 0x%02X at index %zu.";
 
-        snprintf(msg.data(), msg_buffer_size, msg_template.data(), bad_symbol, pos);
+        std::snprintf(msg.data(), msg_buffer_size, msg_template.data(), bad_symbol, pos);
 
         return error_code_t(error_type_t::non_alphabetic_symbol, msg.c_str());
     }

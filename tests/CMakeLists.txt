@@ -1,4 +1,5 @@
 ﻿cmake_minimum_required (VERSION 3.15 FATAL_ERROR)
+set(CMAKE_CXX_STANDARD 20)
 
 project ("base64_test")
 
@@ -24,5 +25,3 @@ target_compile_options(
                        $<$<CXX_COMPILER_ID:Clang>:${SJTEST_CLANG_FLAGS}>)
 
 message(STATUS "CMAKE_CURRENT_BINARY_DIR=" ${CMAKE_CURRENT_BINARY_DIR})
-
-set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)

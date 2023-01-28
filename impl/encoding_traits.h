@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cassert>
+#include <cstdint>
 #include <limits>
 #include <string_view>
 #include <vector>
@@ -15,16 +17,21 @@ namespace base64
     template <const char * alphabet_type, char pad_type>
     struct encoding_traits_t
     {
-        static constexpr std::string_view alphabet() noexcept   {   return std::string_view{ alphabet_type };           }
-        static constexpr uint8_t char_at(size_t index) noexcept {   return static_cast<uint8_t>(alphabet_type[index]);  }
-        static constexpr bool has_pad() noexcept                {   return pad_type != 0;                               }
-        static constexpr uint8_t pad() noexcept                 {   return static_cast<uint8_t>(pad_type);              }
-        static constexpr size_t alphabet_size() noexcept        {   return alphabet().size();                           }
-        static constexpr uint32_t invalid_index() noexcept      {   return static_cast<uint32_t>(alphabet_size());      }
+        static constexpr std::string_view alphabet() noexcept   {   return std::string_view{ alphabet_type };       }
+        static constexpr bool has_pad() noexcept                {   return pad_type != 0;                           }
+        static constexpr uint8_t pad() noexcept                 {   return static_cast<uint8_t>(pad_type);          }
+        static constexpr size_t alphabet_size() noexcept        {   return alphabet().size();                       }
+        static constexpr uint32_t invalid_index() noexcept      {   return static_cast<uint32_t>(alphabet_size());  }
+
+        static constexpr uint8_t char_at(size_t index) noexcept
+        {
+            assert(index < alphabet_size());
+            return static_cast<uint8_t>(alphabet_type[index]);
+        }
 
         static uint32_t index_of(uint8_t symbol)
         {
-            auto make_indexes = []() -> std::vector<uint32_t>
+            const auto make_indexes = []() -> std::vector<uint32_t>
             {
                 std::vector<uint32_t> indexes(256, invalid_index());
 
@@ -53,15 +60,16 @@ namespace base64
             return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
         }
 
-        static constexpr uint8_t char_at(const size_t index) noexcept
-        {
-            return static_cast<uint8_t>(alphabet()[index]);
-        }
-
         static constexpr bool has_pad() noexcept            {   return true;    }
         static constexpr uint8_t pad() noexcept             {   return '=';     }
         static constexpr size_t alphabet_size() noexcept    {   return 64;      }
         static constexpr uint32_t invalid_index() noexcept  {   return 64;      }
+
+        static constexpr uint8_t char_at(const size_t index) noexcept
+        {
+            assert(index < alphabet_size());
+            return static_cast<uint8_t>(alphabet()[index]);
+        }
 
         static uint32_t index_of(const uint8_t symbol) noexcept
         {
@@ -101,14 +109,15 @@ namespace base64
             return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
         }
 
-        static constexpr uint8_t char_at(const size_t index) noexcept
-        {
-            return static_cast<uint8_t>(alphabet()[index]);
-        }
-
         static constexpr bool has_pad() noexcept            {   return false;   }
         static constexpr size_t alphabet_size() noexcept    {   return 64;      }
         static constexpr uint32_t invalid_index() noexcept  {   return 64;      }
+
+        static constexpr uint8_t char_at(const size_t index) noexcept
+        {
+            assert(index < alphabet_size());
+            return static_cast<uint8_t>(alphabet()[index]);
+        }
 
         static uint32_t index_of(const uint8_t symbol) noexcept
         {

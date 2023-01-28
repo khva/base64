@@ -248,8 +248,8 @@ The `base64` library provides the ability to use containers that are not among t
  2. [Define adapter makers for custom container](#define-adapter-makers-for-custom-container).
 
 The `base64` library has two types of adapters: `const_adapter_t` and `mutable_adapter_t`. Both are defined in the `base64/impl/adapters.h` header:
- - `const_adapter_t` is used for containers for input (immutable) data
- - `mutable_adapter_t` is used for containers for output (mutable) data
+ - `const_adapter_t` is used for containers with input (immutable) data
+ - `mutable_adapter_t` is used for containers with output (mutable) data
 
 #### Create adapters directly and use them in encoding/decoding functions
 Adapters can be created using the helper functions defined in the `base64/impl/make_adapter.h` header:
@@ -341,14 +341,14 @@ It is necessary to define a template specialization of adapter makers for the `T
 ```c++
 namespace base64
 {
-    // the const_adapter_t maker is required for containers for input (immutable) data
+    // the const_adapter_t maker is required for containers with input (immutable) data
     template <>
     inline const_adapter_t make_const_adapter<TCharBuffer>(const TCharBuffer& buffer)
     {
         return const_adapter_t(reinterpret_cast<const uint8_t*>(buffer.Ptr()), buffer.Size());
     }
 
-    // mutable_adapter_t required for containers for output (mutable) data
+    // mutable_adapter_t required for containers with output (mutable) data
     template <>
     inline mutable_adapter_t make_mutable_adapter<TCharBuffer>(TCharBuffer& buffer)
     {

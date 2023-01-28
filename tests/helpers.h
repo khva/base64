@@ -4,7 +4,7 @@
 #include <vector>
 
 
-inline std::vector<uint8_t> make_bin_arrya(size_t count)
+inline std::vector<uint8_t> make_bin_array(size_t count)
 {
     std::vector<uint8_t> data(count);
     constexpr size_t max = std::numeric_limits<uint8_t>::max() + 1;
